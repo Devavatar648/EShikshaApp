@@ -1,0 +1,31 @@
+/* Styling for the Right-Side Course List */
+.list-group-item {
+  border-left: 4px solid transparent !important;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+/* Hover effect for items in the list */
+.list-group-item:hover {
+  background-color: rgba(25, 135, 84, 0.05) !important;
+}
+
+/* THE ACTIVE STYLE: Trigger this class when a course is clicked */
+.active-item {
+  background-color: rgba(25, 135, 84, 0.1) !important;
+  border-left: 4px solid #198754 !important; /* Solid Green Bar */
+  color: #198754 !important;
+}
+
+.active-item h6 {
+  color: #198754 !important;
+}
+
+/* Custom Scrollbar for the list */
+.scroll-area::-webkit-scrollbar {
+  width: 5px;
+}
+.scroll-area::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 10px;
+}

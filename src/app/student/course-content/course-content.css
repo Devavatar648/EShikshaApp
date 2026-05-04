@@ -1,0 +1,61 @@
+.course-player-wrapper {
+    background-color: #fff;
+    min-height: 100vh;
+}
+
+.video-container {
+    background: #000;
+}
+
+.content-column {
+    height: 100vh;
+    overflow-y: auto;
+}
+
+.lesson-sidebar {
+    height: 100vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+}
+
+/* Lesson Items */
+.lesson-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.lesson-item:hover {
+    background-color: #f1f4ff;
+}
+
+.lesson-item.active {
+    background-color: #eef2ff;
+    font-weight: 600;
+    border-left: 4px solid #4361ee;
+}
+
+.lesson-item.completed {
+    color: #6c757d;
+}
+
+.bg-primary-soft {
+    background-color: #eef2ff;
+}
+
+/* Accordion Customization */
+.accordion-button:not(.collapsed) {
+    background-color: #f8f9fa;
+    color: #333;
+    box-shadow: none;
+}
+
+.accordion-button {
+    font-weight: 700;
+    font-size: 15px;
+}

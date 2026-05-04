@@ -1,0 +1,63 @@
+/* Card & Search Input Styling */
+.card {
+    border-radius: 16px;
+    overflow: hidden;
+}
+
+.input-group-text {
+    border-radius: 8px 0 0 8px;
+}
+
+.form-control {
+    border-radius: 0 8px 8px 0;
+    font-size: 0.9rem;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    background-color: #f1f3f5 !important;
+}
+
+.form-select {
+    border-radius: 8px;
+    font-size: 0.9rem;
+    min-width: 130px;
+}
+
+/* Table Design Refinements */
+.table thead th {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.04rem;
+    color: #8898aa;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.table tbody td {
+    padding: 1.1rem 0.5rem;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+/* Custom Soft Colors */
+.bg-primary-soft { background-color: #eef4ff !important; }
+.bg-info-soft { background-color: #e7faff !important; }
+.text-primary { color: #0d6efd !important; }
+.text-info { color: #0dcaf0 !important; }
+
+/* Action Buttons */
+.btn-action {
+    background-color: transparent;
+    border: none;
+    color: #6c757d;
+    transition: 0.2s;
+}
+
+.btn-action:hover {
+    background-color: #f1f3f5;
+    color: #000;
+}
+
+.badge {
+    border-radius: 6px;
+    font-weight: 600;
+}

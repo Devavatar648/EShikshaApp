@@ -1,0 +1,105 @@
+/* Variables & General Styling */
+
+.certificateBody {
+    background: #f4f4f4;
+    font-family: 'Montserrat', sans-serif;
+}
+
+/* Certificate Container */
+.certificate-container {
+    width: 100%;
+    max-width: 900px;
+    background-color: #fdfdfd;
+    padding: 30px;
+    position: relative;
+    border-radius: 8px;
+    background-image: radial-gradient(circle at 50% 50%, rgba(197, 160, 89, 0.03) 0%, transparent 80%);
+}
+
+/* Decorative Borders */
+.cert-border-outer {
+    border: 15px solid #002147;
+    padding: 10px;
+    position: relative;
+}
+
+.cert-border-inner {
+    border: 2px solid #c5a059;
+    padding: 50px;
+}
+
+/* Typography */
+.gold-text {
+    color: #c5a059;
+}
+
+.tracking-widest {
+    letter-spacing: 0.2rem;
+    color: #002147;
+}
+
+.italic-serif {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #555;
+}
+
+.student-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    color: #002147;
+    border-bottom: 2px solid #c5a059;
+    display: inline-block;
+    padding: 0 20px;
+}
+
+.signature-font {
+    font-family: 'Great Vibes', cursive;
+    font-size: 1.8rem;
+    color: #333;
+}
+
+/* The Seal */
+.cert-seal {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.seal-inner {
+    width: 80px;
+    height: 80px;
+    background: #c5a059;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2.5rem;
+    color: white;
+    box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+    border: 4px double white;
+}
+
+/* Signature Styling */
+.signature-line hr {
+    width: 80%;
+    margin: 5px auto;
+    border-top: 1px solid #333;
+    opacity: 1;
+}
+
+/* Print Logic */
+@media print {
+    .no-print {
+        display: none !important;
+    }
+    body {
+        background: white;
+    }
+    .certificate-container {
+        box-shadow: none !important;
+        width: 100%;
+        margin: 0;
+    }
+}

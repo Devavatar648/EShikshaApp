@@ -1,0 +1,136 @@
+.user-header-wrap {
+        background: #ffffff;
+        padding: 12px 24px;
+        border-radius: 16px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        border: 1px solid #f1f3f5 !important;
+        transition: all 0.3s ease;
+    }
+
+    .user-profile-pill {
+        cursor: pointer;
+        padding: 6px 12px;
+        border-radius: 12px;
+        transition: all 0.2s ease;
+        background: transparent;
+    }
+
+    .user-profile-pill:hover {
+        background: #f8f9fa;
+    }
+
+    .avatar-wrapper {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        color: white;
+        border-radius: 50%;
+        box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+    }
+
+    .user-name {
+        font-weight: 600;
+        font-size: 0.95rem;
+        color: #344767;
+        margin: 0;
+    }
+
+    .online-indicator {
+        position: absolute;
+        bottom: 2px;
+        right: 2px;
+        width: 10px;
+        height: 10px;
+        background: #2dce89;
+        border: 2px solid #fff;
+        border-radius: 50%;
+    }
+
+    .role-badge {
+    /* Soft aesthetic: light background with matching text color */
+    background-color: #eef2ff; 
+    color: #4338ca;
+    border: 1px solid #e0e7ff;
+    
+    /* Typography */
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.025em;
+    padding: 0.35em 0.8em;
+    
+    /* Smoothness */
+    display: inline-flex;
+    align-items: center;
+    transition: all 0.2s ease;
+}
+
+/* Subtle hover effect to make it feel interactive */
+.role-badge:hover {
+    background-color: #e0e7ff;
+    transform: translateY(-1px);
+}
+
+/* Container for alignment */
+.notification-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+.bell-wrapper {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 45px;
+    height: 45px;
+    background-color: #f8f9fa; /* Light gray background */
+    border-radius: 12px; /* Smooth rounded corners */
+    color: #4361ee; /* Modern Blue */
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Icon Size */
+.bell-wrapper i {
+    font-size: 22px;
+}
+
+/* Notification Badge (Red Dot) */
+.notification-badge {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background-color: #ef233c; /* Vibrant Red */
+    color: white;
+    font-size: 10px;
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 50px;
+    border: 2px solid #fff; /* White border makes it "pop" */
+}
+
+/* Hover Effect */
+.bell-wrapper:hover {
+    background-color: #eef2ff;
+    color: #3751d1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(67, 97, 238, 0.15);
+}
+
+/* Suble Animation on Hover */
+.bell-wrapper:hover i {
+    animation: bell-ring 0.5s ease-in-out;
+}
+
+@keyframes bell-ring {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(15deg); }
+    50% { transform: rotate(-15deg); }
+    75% { transform: rotate(10deg); }
+}

@@ -1,0 +1,87 @@
+<div class="container mt-4">
+  <div class="card border-success shadow-lg" style="border-radius: 15px;">
+    <div class="card-header bg-success text-white fw-bold py-3">
+      Create New Assessment
+    </div>
+    <div class="card-body p-4">
+      <form [formGroup]="assignmentForm" (ngSubmit)="onPublish()">
+
+        <div class="mb-3">
+          <label class="form-label fw-semibold"> Title</label>
+          <input type="text" formControlName="title" class="form-control border-success-subtle"
+            placeholder="Enter Assignment Title...">
+          <div *ngIf="assignmentForm.get('title')?.invalid && assignmentForm.get('title')?.touched">
+            <small class="text-danger">Title is required (min 5 chars).</small>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Due Date</label>
+            <input type="date" formControlName="dueDate" [min]="getCurrentDate()" class="form-control border-success-subtle">
+          </div>
+          <div class="col-md-6 mb-3">
+            <label class="form-label fw-semibold">Total Marks</label>
+            <input type="number" formControlName="totalMarks" class="form-control border-success-subtle"
+              placeholder="e.g. 100">
+          </div>
+        </div>
+        <div class="mb-4">
+          <label class="form-label fw-semibold">Upload Questions (PDF)</label>
+          <div class="input-group">
+            <input type="file" class="form-control border-success-subtle" (change)="onFileSelected($event)"
+              accept="application/pdf">
+            <label class="input-group-text bg-light"><i class="bi bi-file-earmark-pdf text-danger"></i></label>
+          </div>
+          <small class="text-muted">Please upload the assessment questions in PDF format.</small>
+        </div>
+
+        <button type="submit" class="btn btn-success w-100 fw-bold py-2 shadow-sm" [disabled]="assignmentForm.invalid">
+          Publish to Students
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+
+
+<div class="container mt-4">
+  <div class="col-md-7">
+    </div>
+
+  <div class="col-md-5">
+    <h4 class="text-muted mb-4">Published Assessments</h4>
+    
+    <div *ngIf="publishedAssignments.length === 0" class="text-center py-5 border rounded bg-light">
+      <p class="text-muted mb-0">No assignments published yet.</p>
+    </div>
+
+    <div *ngFor="let item of publishedAssignments" class="card mb-3 border-success-subtle shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div>
+            <h6 class="mb-0 fw-bold text-success">{{item.title}}</h6>
+            <small class="text-muted">
+              <i class="bi bi-calendar-event"></i> Due: {{item.dueDate | date:'mediumDate'}}
+            </small>
+          </div>
+          <span class="badge bg-success-subtle text-success">{{item.totalMarks}} Marks</span>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button class="btn btn-sm btn-outline-secondary flex-grow-1" (click)="onDownload(item)" title="Download PDF">
+            <i class="bi bi-download"></i> Download
+          </button>
+          
+          <button class="btn btn-sm btn-outline-primary" (click)="onEdit(item)" title="Edit">
+            <i class="bi bi-pencil-square">Edit</i>
+          </button>
+          
+          <button class="btn btn-sm btn-outline-danger" (click)="onDelete(item.id)" title="Delete">
+            <i class="bi bi-trash">Delete</i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

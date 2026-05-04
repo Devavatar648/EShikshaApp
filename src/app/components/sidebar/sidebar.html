@@ -1,0 +1,97 @@
+<div class="d-flex" style="min-height: 100vh;">
+
+  <aside class="d-none d-lg-block bg-body-tertiary border-end" style="width: 250px;min-width: 250px;">
+    <div class="p-3 sticky-top">
+      <div class="navbar-brand d-flex align-items-center mb-4">
+        @if(activeUser.role==='ADMIN'){
+        <img src="https://cdn-icons-png.flaticon.com/512/2206/2206368.png"
+          style="max-height: 40px; border-radius:20px; background: #f0f2f5" class="me-2" alt="Admin Icon" />
+        }@else if(activeUser.role==='INSTRUCTOR'){
+        <img src="https://th.bing.com/th/id/OIP.e3eb_GMDTeJh21FDBJ6lwQHaHa?w=193&h=193&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+          style="max-height: 40px; border-radius:20px" class="me-2" />
+        }@else{
+        <img src="https://cdn-icons-png.flaticon.com/512/3532/3532811.png"
+          style="max-height: 40px; border-radius:20px; background: #f0f2f5" class="me-2" alt="Student Icon" />
+        }
+        <span class="fw-bold">{{activeUser.role}}</span>
+      </div>
+
+      <ul class="nav flex-column gap-2">
+        @for(ele of navElements(); track $index){
+        <li class="nav-item">
+          <a class="nav-link text-dark rounded" [routerLink]="getLink(ele)" routerLinkActive="active">{{ele}}</a>
+        </li>
+        }
+        <li class="nav-item">
+          <a class="nav-link text-dark rounded" style="cursor: pointer;" (click)="logout()">
+            <i class="bi bi-box-arrow-left"></i>
+            Logout
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
+
+  <div class="flex-grow-1">
+
+    <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
+      <div class="container-fluid">
+        <a class="navbar-brand d-lg-none" href="#">
+          <img
+            src="https://th.bing.com/th/id/OIP.e3eb_GMDTeJh21FDBJ6lwQHaHa?w=193&h=193&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3"
+            style="max-height: 30px; border-radius:20px" />
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0 d-lg-none">
+            @for(ele of navElements(); track $index){
+            <li class="nav-item">
+              <a class="nav-link text-dark rounded" [routerLink]="getLink(ele)" routerLinkActive="active">{{ele}}</a>
+            </li>
+            }
+            <li class="nav-item">
+              <a class="nav-link text-dark rounded" style="cursor: pointer;" (click)="logout()">
+                <i class="bi bi-box-arrow-left"></i>
+                Logout
+              </a>
+            </li>
+          </ul>
+          <!--  -->
+          <div class="user-header-wrap w-100 d-flex justify-content-end align-items-center">
+            <div class="user-profile-pill d-flex align-items-center gap-3">
+              <div class="notification-container">
+                <button class="bell-wrapper border-0" (click)="openNotificaionBox()">
+                  <i class="bi bi-bell-fill"></i>
+                  <span class="notification-badge">3</span>
+                </button>
+                @if(showNotificaitonBox()){
+                  <app-notification></app-notification>
+                }
+              </div>
+              <div class="text-end d-none d-sm-block">
+                <p class="user-name">{{activeUser.name}}</p>
+                <span class="badge rounded-pill role-badge text-capitalize shadow-sm">
+                  <i class="bi bi-shield-check me-1"></i>
+                  {{activeUser.role | lowercase}}
+                </span>
+              </div>
+
+              <div class="avatar-wrapper">
+                <i class="bi bi-person-fill" style="font-size: 20px;"></i>
+                <span class="online-indicator"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,119 @@
+<div class="vh-100 d-flex justify-content-center align-items-center"
+    style="background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);">
+
+    <div class="card border-0 shadow-lg overflow-hidden"
+        style="max-width: 450px; width: 90%; border-radius: 2rem; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px);">
+
+        <div class="card-body p-4 p-md-5">
+            <div class="text-center mb-4">
+
+                <img src="EportalLogo.png" alt="Logo" height="50" class="mb-3" style="border-radius: 25px; cursor: pointer;"
+                    (click)="goToHome()">
+                <h3 class="fw-bold text-success">Create your account</h3>
+                <p class="text-muted small">Enter your details to access the portal</p>
+            </div>
+
+            <form class="d-flex flex-column gap-3" [formGroup]="registerForm" (submit)="register()">
+
+                <div class="form-floating mb-1">
+                    <input type="text" class="form-control border-0 bg-light px-3"
+                        [ngClass]="name?.touched && name?.hasError('required')?'is-invalid':''" id="name"
+                        formControlName="name" placeholder="John Doe" style="border-radius: 12px;">
+                    <label for="name" class="text-muted ps-3">
+                        @if(name?.touched && name?.hasError('required')){
+                            <span class="text-danger fw-bold">Name is required</span>
+                        }@else{
+                            Full Name
+                        }
+                    </label>
+                    @if(name?.touched && name?.hasError('pattern')){
+                        <div class="ps-2 mt-1">
+                            <small class="text-danger fw-bold animate__animated animate__fadeIn">
+                                <i class="bi bi-exclamation-circle-fill me-1"></i> Only letters and space are allowed
+                            </small>
+                        </div>
+                    }
+                </div>
+
+                <div class="form-floating mb-1">
+                    <input type="email" class="form-control border-0 bg-light px-3" id="email"
+                        [ngClass]="email?.touched && (email?.hasError('required') || email?.hasError('pattern'))?'is-invalid':''"
+                        formControlName="email" placeholder="name@example.com" style="border-radius: 12px;">
+                    <label for="email" class="text-muted ps-3">
+                        @if(email?.touched && email?.invalid){
+                        @if(email?.hasError('required')){ <span class="text-danger fw-bold">Email is required</span> }
+                        }@else{ Email Address }
+                    </label>
+                    @if(email?.touched && email?.hasError('pattern')){
+                    <div class="ps-2 mt-1">
+                        <small class="text-danger fw-bold animate__animated animate__fadeIn">
+                            <i class="bi bi-exclamation-circle-fill me-1"></i> Invalid email format
+                        </small>
+                    </div>
+                    }
+                </div>
+
+                <div class="form-floating mb-1">
+                    <select class="form-select border-0 bg-light px-3" id="role"
+                        [ngClass]="role?.touched && role?.hasError('required')?'is-invalid':''" formControlName="role"
+                        style="border-radius: 12px;">
+                        <option value="STUDENT">Student</option>
+                        <option value="INSTRUCTOR">Instructor</option>
+                    </select>
+                    <label for="role" class="text-muted ps-3">Select User Role</label>
+                </div>
+
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="password" class="form-control border-0 bg-light px-3"
+                                [ngClass]="password?.touched && password?.invalid ?'is-invalid':''" id="password"
+                                formControlName="password" placeholder="Password" style="border-radius: 12px;">
+                            <label for="password" class="text-muted ps-3">Password</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-floating">
+                            <input type="password" class="form-control border-0 bg-light px-3"
+                                [ngClass]="confirmPassword?.touched && (confirmPassword?.hasError('required') || confirmPassword?.hasError('mismatch'))?'is-invalid':''"
+                                id="confirmPassword" formControlName="confirmPassword" placeholder="Confirm"
+                                style="border-radius: 12px;">
+                            <label for="confirmPassword" class="text-muted ps-3">Confirm</label>
+                        </div>
+                    </div>
+                </div>
+                @if(password?.touched && password?.invalid && !password?.hasError('required')){
+                    @for(error of password?.errors | keyvalue; track $index){
+                        <div class="ps-2 mt-1">
+                            <small class="text-danger fw-bold animate__animated animate__fadeIn">
+                                <i class="bi bi-exclamation-circle-fill me-1"></i>{{password?.errors?.[error.key]}}
+                            </small>
+                        </div>
+                    }
+                }
+                @if (!password?.invalid && confirmPassword?.touched && confirmPassword?.hasError('mismatch')) {
+                <div class="text-center">
+                    <small class="text-danger fw-bold animate__animated animate__fadeIn">
+                        <i class="bi bi-exclamation-circle-fill me-1"></i> Passwords do not match
+                    </small>
+                </div>
+                }
+
+                <div class="d-grid gap-2 mt-4">
+                    <button class="btn btn-primary btn-lg border-0 shadow py-3 fw-bold transition-all"
+                        style="border-radius: 12px; background: linear-gradient(45deg, #25a54b, #25a54b);"
+                        [disabled]="registerForm.invalid">
+                        Register
+                    </button>
+                </div>
+
+                <div class="text-center mt-4">
+                    <p class="text-muted small mb-0">Already a member?
+                        <a [routerLink]="['/login']" class="text-primary text-decoration-none fw-bold">Login to
+                            Portal</a>
+                    </p>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

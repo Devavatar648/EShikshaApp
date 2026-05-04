@@ -1,0 +1,37 @@
+
+/* You can add global styles to this file, and also import other style files */
+*{
+    margin: 0;
+    padding: 0;
+    font-family: "Noto Serif", serif;
+  font-optical-sizing: auto;
+}
+
+
+/* Default sidebar links (Plain) */
+aside .nav-link {
+  border-left: 4px solid transparent !important; /* Reserve space for the bar */
+  background-color: transparent !important;
+  color: #212529 !important;
+  transition: all 0.2s ease;
+  border-radius: 0 !important; /* Square edges look better with side bars */
+}
+
+/* Style applied ONLY when the link is active */
+aside .nav-link.active {
+  color: #198754 !important; /* Green text */
+  background-color: rgba(25, 135, 84, 0.1) !important; /* Light green background */
+  border-left: 4px solid #198754 !important; /* The solid green active bar */
+  font-weight: bold;
+}
+
+/* Optional: Subtle hover effect */
+aside .nav-link:hover:not(.active) {
+  background-color: rgba(25, 135, 84, 0.05) !important;
+  border-left-color: rgba(25, 135, 84, 0.2);
+}
+
+/* Ensure mobile navbar links don't get the side bar */
+.navbar-nav .nav-link {
+  border-left: none !important;
+}

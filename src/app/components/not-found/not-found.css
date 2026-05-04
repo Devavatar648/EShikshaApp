@@ -1,0 +1,61 @@
+.error-page-wrapper {
+    min-height: 100vh;
+    background-color: #fcfdfe;
+    font-family: 'Inter', sans-serif;
+}
+
+.error-code {
+    font-size: 120px;
+    font-weight: 900;
+    color: rgba(67, 97, 238, 0.05); /* Very faint primary color */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -120%);
+    z-index: -1;
+    letter-spacing: -5px;
+}
+
+.illustration-container {
+    position: relative;
+}
+
+/* Floating Animation for the Icon */
+.floating-animation {
+    animation: floating 3s ease-in-out infinite;
+}
+
+@keyframes floating {
+    0% { transform: translate(0, 0px); }
+    50% { transform: translate(0, -20px); }
+    100% { transform: translate(0, 0px); }
+}
+
+.btn-primary {
+    background-color: #4361ee;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    background-color: #3751d1;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+}
+
+.form-control:focus {
+    box-shadow: none;
+}
+
+.input-group-text {
+    color: #4361ee;
+}
+
+h1 {
+    color: #1e1e2d;
+    font-size: 2.5rem;
+}
+
+.text-muted {
+    line-height: 1.6;
+}
