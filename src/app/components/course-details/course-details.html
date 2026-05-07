@@ -1,81 +1,144 @@
 @if (selectedCourse(); as course) {
-  <div class="bg-dark text-white py-5 shadow-lg mb-5">
+<div class="course-page-wrapper">
+  <!-- Modern Hero Header -->
+  <header class="hero-section border-bottom">
     <div class="container">
-      <div class="row align-items-center">
-        <div class="col-lg-8">
-          <nav aria-label="breadcrumb">
-            <ol class="breadcrumb mb-3">
-              <li class="breadcrumb-item"><a routerLink="/all-courses" class="text-success text-decoration-none">Courses</a></li>
-              <li class="breadcrumb-item active text-white-50" aria-current="page">{{ course.cCategory }}</li>
-            </ol>
-          </nav>
+      <div class="row g-5">
+        <!-- Left: Narrative -->
+        <div class="col-lg-7">
+          <div class="category-pill mb-4">
+            <span class="badge rounded-pill bg-primary-soft text-primary">
+              <i class="bi bi-tag-fill me-1"></i> {{ course.cCategory || 'Premium Course' }}
+            </span>
+          </div>
           
-          <h1 class="display-4 fw-bold mb-3">{{ course.cName }}</h1>
-          <p class="lead mb-4 opacity-75">{{ course.cDescription }}</p>
+          <h1 class="course-title mb-4">{{ course.cName }}</h1>
           
-          <div class="d-flex flex-wrap gap-4 mb-4 small">
-            <!-- <span><i class="bi bi-person-circle me-2"></i>Instructor: <strong>{{ course.cInstructor}}</strong></span> -->
-            <span><i class="bi bi-star-fill text-warning me-2"></i>4.9 (450 Ratings)</span>
-            <span><i class="bi bi-people-fill me-2"></i>1,200 Students</span>
-            <!-- <span><i class="bi bi-clock-fill me-2"></i>{{ course.cDuration }}</span> -->
+          <!-- Rating Summary -->
+          <div class="d-flex align-items-center gap-3 mb-4">
+            <div class="d-flex text-warning">
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-fill"></i>
+              <i class="bi bi-star-half"></i>
+            </div>
+            <span class="fw-bold text-dark">4.8</span>
+            <span class="text-muted small">(240 Student Ratings)</span>
+          </div>
+          
+          <div class="description-box mb-5">
+            <label class="section-label">About this course</label>
+            <p class="description-text">{{ course.cDescription }}</p>
           </div>
 
-          <div class="d-flex gap-3">
-            <button class="btn btn-success btn-lg px-5 fw-bold" (click)="enroll()">Enroll Now</button>
-            <button class="btn btn-outline-light btn-lg px-4"><i class="bi bi-heart"></i></button>
+          <!-- Instructor Card -->
+          <div class="instructor-card shadow-sm border">
+            <div class="instructor-icon">
+              <i class="bi bi-person-circle"></i>
+            </div>
+            <div class="instructor-info">
+              <span class="label">Course Instructor</span>
+              <h6 class="name mb-0">{{ course.cInstructor }}</h6>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </div>
 
-  <div class="container pb-5">
-    <div class="row g-5">
-      <div class="col-lg-8">
-        <h3 class="fw-bold mb-4">Course Content</h3>
-        
-        <div class="accordion accordion-flush shadow-sm border rounded" id="contentAccordion">
-          <div class="accordion-item">
-            <h2 class="accordion-header">
-              <button class="accordion-button fw-bold" type="button" data-bs-toggle="collapse" data-bs-target="#module1">
-                Module 1: Introduction to {{ course.cName }}
-              </button>
-            </h2>
-            <div id="module1" class="accordion-collapse collapse show">
-              <div class="accordion-body p-0">
-                <div class="list-group list-group-flush">
-                  <div class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <span><i class="bi bi-play-circle-fill me-3 text-primary"></i>1.1 Course Overview</span>
-                    <a href="#" class="btn btn-sm btn-outline-primary px-3">Start</a>
-                  </div>
-                  <div class="list-group-item d-flex justify-content-between align-items-center py-3">
-                    <span><i class="bi bi-file-earmark-text me-3 text-secondary"></i>1.2 Setup Guide</span>
-                    <span class="badge bg-light text-dark border">PDF</span>
-                  </div>
-                </div>
+        <!-- Right: Action Sidebar -->
+        <div class="col-lg-5">
+          <div class="sidebar-card sticky-top shadow-lg rounded-4">
+            <div class="card-body p-4">
+              <h5 class="fw-bold mb-4">Course Highlights</h5>
+              <ul class="highlight-list mb-4">
+                <li>
+                  <span class="text-muted"><i class="bi bi-patch-question"></i> Quizzes</span>
+                  <span class="value text-dark fw-bold">{{ course.quizzes?.length || 0 }}</span>
+                </li>
+                <li>
+                  <span class="text-muted"><i class="bi bi-file-earmark-code"></i> Assignments</span>
+                  <span class="value text-dark fw-bold">{{ course.assignments?.length || 0 }}</span>
+                </li>
+                <li>
+                  <span class="text-muted"><i class="bi bi-reception-4"></i> Level</span>
+                  <span class="value">Beginner</span>
+                </li>
+              </ul>
+              <div class="d-grid">
+                <button class="btn btn-primary btn-enroll" (click)="enroll()">
+                  Enroll Now <i class="bi bi-arrow-right ms-2"></i>
+                </button>
               </div>
             </div>
           </div>
         </div>
       </div>
+    </div>
+  </header>
 
-      <div class="col-lg-4">
-        <div class="card border-0 shadow-sm sticky-top" style="top: 20px;">
-          <div class="card-body p-4">
-            <h5 class="fw-bold mb-3">What's included:</h5>
-            <ul class="list-unstyled mb-0">
-              <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Lifetime access</li>
-              <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Hands-on projects</li>
-              <li class="mb-2"><i class="bi bi-check-circle-fill text-success me-2"></i> Certificate of completion</li>
-            </ul>
+  <!-- Content & Reviews Section -->
+  <main class="container py-5">
+    <div class="row g-5">
+      <!-- Main Content -->
+      <div class="col-lg-12">
+        <!-- Curriculum -->
+        <div class="curriculum-header mb-4 d-flex justify-content-between align-items-center">
+          <h4 class="fw-bold mb-0">Curriculum</h4>
+          <span class="count-badge">
+            {{ (course.quizzes?.length || 0) + (course.assignments?.length || 0) }} Modules
+          </span>
+        </div>
+
+        <div class="curriculum-list vstack gap-3 mb-5">
+          @for (quiz of course.quizzes; track quiz._id) {
+            <div class="curriculum-item quiz shadow-sm bg-white">
+              <div class="d-flex align-items-center">
+                <div class="item-icon warning"><i class="bi bi-lightning-charge-fill"></i></div>
+                <span class="item-title text-dark">{{ quiz.title }}</span>
+              </div>
+              <span class="item-type">Quiz</span>
+            </div>
+          }
+          @for (task of course.assignments; track task._id) {
+            <div class="curriculum-item assignment shadow-sm bg-white">
+              <div class="d-flex align-items-center">
+                <div class="item-icon info"><i class="bi bi-pencil-square"></i></div>
+                <span class="item-title text-dark">{{ task.title }}</span>
+              </div>
+              <span class="item-type">Assignment</span>
+            </div>
+          }
+        </div>
+
+        <hr class="my-5 opacity-10">
+
+        <!-- Feedbacks Section -->
+        <h4 class="fw-bold mb-4">Student Feedbacks</h4>
+        <div class="row g-3 mb-4">
+          <!-- Sample Review 1 -->
+          <div class="col-12">
+            <div class="review-card p-4 rounded-4 bg-white border shadow-sm">
+              <div class="d-flex justify-content-between mb-2">
+                <div class="d-flex align-items-center">
+                  <div class="avatar me-3">JS</div>
+                  <div>
+                    <h6 class="mb-0 fw-bold">Joy Sarkar</h6>
+                    <span class="text-muted small">2 days ago</span>
+                  </div>
+                </div>
+              </div>
+              <p class="review-text text-secondary mt-3 mb-0">
+                "The practical assignments in this course are incredible. I finally understand how to connect my frontend to the database properly!"
+              </p>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </main>
+</div>
 } @else {
-  <div class="container py-5 text-center">
-    <div class="spinner-border text-primary" role="status"></div>
-    <p class="mt-3 text-muted">Searching for course details...</p>
+  <div class="loader-container">
+    <div class="spinner-grow text-primary" role="status"></div>
+    <span class="mt-3">Preparing your learning experience...</span>
   </div>
 }

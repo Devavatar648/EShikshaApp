@@ -26,6 +26,6 @@ export class UserService {
     // Only append if the value actually exists
     if (role && role !== 'ALL') params = params.append('role', role);
     if (searchVal && searchVal.trim() !== '') params = params.append('searchVal', searchVal);
-    return this.httpClient.get<{result:User[], success:boolean, message:string, errors:any[]}>(this.apiServices.getFullUrl(`user/getUsers`),{params})
+    return this.httpClient.get<{result:User[], success:boolean, message:string, errors:any[]}>(this.apiServices.getFullUrl(`admin/users`),{params})
   }
 }
