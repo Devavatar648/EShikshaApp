@@ -1,8 +1,9 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { ApiServices } from './api-services';
 import { Course } from '../models/course';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { Assignments } from '../models/assignments';
 
 @Injectable({
   providedIn: 'root',
@@ -13,46 +14,19 @@ export class CourseService {
   apiServices = inject(ApiServices);
 
   instructorCourses$ = new BehaviorSubject<Course[]>([]);
-  catalogCourses$ = new BehaviorSubject<Course[]>([
-    {
-        _id:"100",
-        title: 'Full Stack Web Mastery',
-        category: 'Beginner',
-        rating: 4.8,
-        enrollments: '2.5k',
-        description: 'Build modern, responsive websites using Angular, Node.js, and MongoDB.',
-        img: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=600&q=80',
-        instructorId:"69e9e885eec73ab7beeed949",
-        instructor:"Dev",
-        badge: 'Bestseller'
-    },
-    { 
-        _id:"200",
-        title: 'Python for Data Analysis', 
-        category: 'Beginner', 
-        rating: 4.9, 
-        enrollments: '1.2k', 
-        description: 'Analyze complex data sets and create stunning visualizations with Python.',
-        instructor:"Dev",
-        instructorId:"69e9e885eec73ab7beeed949",
-        img: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=600&q=80' 
+  catalogCourses$ = new BehaviorSubject<Course[]>([]);
+
+  getAllCourses(title?:string):Observable<{result:Course[],message:string}>{
+    let params = new HttpParams();
+    if(title){
+      params = params.append("title",title);
     }
-  ]);
-
-  getAllCourses():Observable<{result:Course[],message:string}>{
-    return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint('')));
+    return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint('')), {params});
   }
 
-  searchCourseByTitle(title:string):Observable<{result:Course[],message:string}>{
-    return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint('search')),{params:{title}})
+  getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[]}, message:string}>{
+    return this.httpClient.get<{result:{course:Course,assignments:Assignments[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
   }
-
-  getCourseByInstructorId(id:string):Observable<{result:Course[],message:string}>{
-    return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`instructor/${id}`)))
-  }
-
-
-
 
   getCourseEndpoint(endpoint:string):string{
     return `course/${endpoint}`;

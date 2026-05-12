@@ -1,120 +1,49 @@
-/* Layout Base */
-.course-page-wrapper {
-  background-color: #f8fafc;
-  min-height: 100vh;
+/* Glassmorphism Effect */
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
-.hero-section {
-  background: white;
-  padding-bottom: 4rem;
-}
-
-/* Typography */
-.course-title {
-  font-size: 2.75rem;
-  font-weight: 800;
-  color: #0f172a;
-  line-height: 1.2;
-}
-
-.section-label {
-  text-transform: uppercase;
-  font-weight: 700;
-  font-size: 0.75rem;
-  color: #64748b;
-  letter-spacing: 0.05em;
-  display: block;
-}
-
-.description-text {
-  font-size: 1.1rem;
-  color: #475569;
-  line-height: 1.7;
-}
-
-/* Instructor & Pills */
-.bg-primary-soft { background-color: #eff6ff; }
-
-.instructor-card {
-  display: flex;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  background: white;
-  border-radius: 1rem;
+.w-fit {
   width: fit-content;
 }
 
-.instructor-icon { font-size: 2rem; color: #3b82f6; margin-right: 0.75rem; }
-.instructor-info .label { font-size: 0.7rem; color: #94a3b8; display: block; }
-.instructor-info .name { color: #1e293b; font-weight: 700; }
-
-/* Sidebar */
-.sidebar-card {
-  border: none;
-  background: white;
-  top: 2rem !important;
+/* Typography */
+.ls-1 {
+  letter-spacing: 1px;
 }
 
-.highlight-list { list-style: none; padding: 0; }
-.highlight-list li {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.85rem 0;
-  border-bottom: 1px solid #f1f5f9;
+/* Animations */
+.transition-all {
+  transition: all 0.3s ease;
 }
 
-.btn-enroll {
-  padding: 0.85rem;
-  font-weight: 700;
-  border-radius: 0.75rem;
-  box-shadow: 0 10px 15px -3px rgba(59, 130, 246, 0.3);
-  transition: transform 0.2s;
+.hover-shadow:hover {
+  transform: translateX(5px);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1) !important;
+  border-color: var(--bs-primary) !important;
 }
 
-.btn-enroll:hover { transform: translateY(-2px); }
-
-/* Curriculum */
-.count-badge { background: #f1f5f9; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 600; }
-.curriculum-item {
-  border-radius: 0.75rem;
-  padding: 1rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  border: 1px solid #f1f5f9;
+.transition-hover:hover {
+  transform: translateY(-5px);
 }
 
-.item-icon { width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 8px; margin-right: 1rem; }
-.item-icon.warning { background: #fffbeb; color: #d97706; }
-.item-icon.info { background: #f0f9ff; color: #0284c7; }
-.item-title { font-weight: 600; font-size: 0.95rem; }
-.item-type { font-size: 0.7rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; }
+/* Header background overlay */
+.hero-section {
+  overflow: hidden;
+}
 
-/* Reviews Section */
-.avatar {
+/* Icon Box helper */
+.icon-box {
   width: 45px;
   height: 45px;
-  background: #3b82f6;
-  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Avatar Circle */
+.avatar-circle {
   border-radius: 50%;
-  font-weight: bold;
+  flex-shrink: 0;
 }
-
-.review-card {
-  transition: border-color 0.3s;
-}
-
-.review-card:hover {
-  border-color: #3b82f6 !important;
-}
-
-.review-text {
-  font-style: italic;
-  line-height: 1.6;
-}
-
-/* Loader */
-.loader-container { min-height: 70vh; display: flex; flex-direction: column; justify-content: center; align-items: center; }

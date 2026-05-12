@@ -1,44 +1,35 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { CourseService } from '../../services/course-service';
+import { Course } from '../../models/course';
+import { Assignments } from '../../models/assignments';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-course-details',
-  imports: [],
+  imports: [DatePipe],
   templateUrl: './course-details.html',
   styleUrl: './course-details.css',
 })
 export class CourseDetails {
-  // selectedCourse = signal<any>({
-  //       cName:"Angular",
-  //       cCategory:"Technical",
-  //       cDescription:"THis is angular course description",
-  //       instructor:"Joy"
-  //     });
+  activatedRoute = inject(ActivatedRoute);
+  courseService = inject(CourseService);
 
-   MOCK_SELECTED_COURSE = {
-    _id: 'c101',
-    cName: 'Advanced Full-Stack Web Development',
-    cCategory: 'Programming',
-    cInstructor: 'Dr. Angela Yu',
-    cDescription: 'Master the MERN stack (MongoDB, Express, React, and Node.js) by building real-world projects. This course covers everything from database modeling to frontend state management and deployment on cloud platforms.',
-    
-    // Quiz Array
-    quizzes: [
-      { _id: 'q1', title: 'Introduction to Node.js Runtime', questions: 10 },
-      { _id: 'q2', title: 'Deep Dive into Middleware', questions: 15 },
-      { _id: 'q3', title: 'Authentication with JWT', questions: 12 }
-    ],
+  selectedCourse = signal<{course:Course,assignments:Assignments[]}|null>(null);
 
-    // Assignment Array
-    assignments: [
-      { _id: 'a1', title: 'Build a RESTful API for a Bookstore' },
-      { _id: 'a2', title: 'Implement Social Login with Passport.js' }
-    ]
-  };
+  ngOnInit(){
+    this.courseService.getCourseById(this.activatedRoute.snapshot.params['courseId']).subscribe(res=>{
+      this.selectedCourse.set(res.result);
+    })
+  }
 
+  hasAccess=():boolean=>{
+    return localStorage.getItem("eshikshaToken")?true:false;
+  }
 
-  selectedCourse = signal(this.MOCK_SELECTED_COURSE);
+  // selectedCourse = signal(this.MOCK_SELECTED_COURSE);
   enroll() {
-    alert(`Successfully enrolled in ${this.selectedCourse()?.cName}!`);
+    alert(`Successfully enrolled in ${this.selectedCourse()?.course?.title}!`);
   }
 
 }

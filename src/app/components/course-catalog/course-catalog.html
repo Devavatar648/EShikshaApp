@@ -46,16 +46,16 @@
           type="text" 
           class="form-control border-start-0 ps-0" 
           placeholder="Search by name or category..."
-          [ngModel]="searchQuery()"
-          (ngModelChange)="searchQuery.set($event)">
+          [formControl]="searchQuery"
+        >
       </div>
     </div>
   </div>
             
   <div class="row g-4">
     <!-- Updated to loop through filteredCourses() -->
-   @for (course of filteredCourses(); track course._id) {
-      <div class="col-md-6 col-lg-4 col-xl-3">
+   @for (course of courseList(); track course._id) {
+      <div class="col-md-6 col-lg-4">
         <app-course-card [course]="course"></app-course-card>
       </div>
     }@empty {

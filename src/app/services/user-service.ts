@@ -13,12 +13,12 @@ export class UserService {
   private apiServices = inject(ApiServices);
   activeUser$ = new BehaviorSubject<(User&{id:string})|null>(null);
 
-  login(user:AuthUser):Observable<{result:{token:string}, success:boolean, message:string, errors:any[]}>{
-    return this.httpClient.post<{result:{token:string}, success:boolean, message:string, errors:any[]}>(this.apiServices.getFullUrl("user/auth"), user);
+  login(user:AuthUser):Observable<{result:{token:string}, message:string}>{
+    return this.httpClient.post<{result:{token:string}, message:string}>(this.apiServices.getFullUrl("auth/login"), user);
   }
 
-  register(user:User):Observable<{result:string, success:boolean, message:string, errors:any[]}>{
-    return this.httpClient.post<{result:string, success:boolean, message:string, errors:any[]}>(this.apiServices.getFullUrl("user/register"), user);
+  register(user:User):Observable<{result:any, message:string|string[]}>{
+    return this.httpClient.post<{result:any, message:string|string[]}>(this.apiServices.getFullUrl("auth/register"), user);
   }
 
   getUsers(role?:string,searchVal?:string):Observable<{result:User[], success:boolean, message:string, errors:any[]}>{

@@ -11,6 +11,6 @@ export const instructorRoutes : Routes = [
         {path:"managecourse", loadComponent:()=>import("../components/manage-course/manage-course").then(r=>r.ManageCourse)},
         {path:"communication", loadComponent:()=>import("../admin/message/message").then(r=>r.Message)},
         {path:"coursecatalog", loadComponent:()=>import("../components/course-catalog/course-catalog").then(r=>r.CourseCatalog)},
-        {path:"coursedetails/:name", loadComponent:()=>import("../components/course-details/course-details").then(r=>r.CourseDetails)},
+        {path:"coursecatalog/coursedetails/:courseId", loadComponent:()=>import("../components/course-details/course-details").then(r=>r.CourseDetails)},
     ]}
 ]
