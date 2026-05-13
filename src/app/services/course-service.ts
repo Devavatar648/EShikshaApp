@@ -28,6 +28,8 @@ export class CourseService {
     return this.httpClient.get<{result:{course:Course,assignments:Assignments[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
   }
 
+  
+
   getCourseEndpoint(endpoint:string):string{
     return `course/${endpoint}`;
   }

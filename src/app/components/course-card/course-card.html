@@ -37,7 +37,7 @@
 
       <h5 class="card-title fw-bold text-dark mb-2">{{course()?.title}}</h5>
       <p class="card-text text-muted small mb-4 line-clamp-2">
-        {{course()?.description}}
+        {{course()?.description?.substring(0,100)}}...
       </p>
 
       <div class="d-grid">

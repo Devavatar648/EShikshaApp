@@ -28,4 +28,12 @@ export class UserService {
     if (searchVal && searchVal.trim() !== '') params = params.append('searchVal', searchVal);
     return this.httpClient.get<{result:User[], success:boolean, message:string, errors:any[]}>(this.apiServices.getFullUrl(`admin/users`),{params})
   }
+
+  updateUser(userId:string, updatedData:{email?:string,name?:string}):Observable<{result:null, message:string}>{
+    return this.httpClient.patch<{result:null, message:string}>(this.apiServices.getFullUrl(`admin/user/${userId}`), updatedData);
+  }
+
+  deleteUser(userId:string):Observable<{result:null, message:string}>{
+    return this.httpClient.delete<{result:null, message:string}>(this.apiServices.getFullUrl(`admin/user/${userId}`));
+  }
 }

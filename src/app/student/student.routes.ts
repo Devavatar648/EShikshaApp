@@ -9,6 +9,6 @@ export const studentRoutes : Routes = [
         {path:"settings", loadComponent:()=>import("../components/settings/settings").then(r=>r.Settings)},
         {path:"enrolledcourses", loadComponent:()=>import("./enrolled-courses/enrolled-courses").then(r=>r.EnrolledCourses)},
         {path:"enrolledcourses/result", loadComponent:()=>import("./result/result").then(r=>r.Result)},
-        {path:"enrolledcourses/course", loadComponent:()=>import("./course-content/course-content").then(r=>r.CourseContent)}
+        {path:"enrolledcourses/coursedetails/:courseId", loadComponent:()=>import("../components/course-details/course-details").then(r=>r.CourseDetails)}
     ]}
 ]
