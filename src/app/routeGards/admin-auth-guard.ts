@@ -4,18 +4,15 @@ import { TokenService } from '../services/token-service';
 import { UserService } from '../services/user-service';
 
 export const adminAuthGuard: CanMatchFn = (route, segments) => {
-  const token = localStorage.getItem("shtoken");
+  const token = localStorage.getItem("eshikshaToken");
   const tokenService = inject(TokenService);
   const router = inject(Router);
   const userService = inject(UserService);
 
-
-  let user:any;
   if(token){
     const data = tokenService.decodeToken(token);
-    user = data.user;
-    userService.activeUser$.next(user);
-    if(user && user.role==="ADMIN"){
+    userService.activeUser$.next(data);
+    if(data && data.role==="ADMIN"){
       return true;
     }
     return false;

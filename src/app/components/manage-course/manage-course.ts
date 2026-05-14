@@ -32,15 +32,33 @@ export class ManageCourse {
   }
 
   onSubmit() {
-    if (this.courseForm.invalid) return;
+    // 3. Final logic check before submission
+    // const name = this.courseForm.value.cName;
+    // const category = this.courseForm.value.cCategory;
 
-    const courseData = this.courseForm.value;
+    // console.log(name, category);
 
-    if (this.isEditMode()) {
-      this.updateExistingCourse(courseData, this.oldCourseName);
-    } else {
-      this.addCourse(courseData);
-    }
+    // const duplicate = this.courseService.courseList().find(c => 
+    //   c.cName.toLowerCase().trim() === name?.toLowerCase().trim() && 
+    //   c.cCategory.toLocaleLowerCase() === category?.toLowerCase()
+    // );
+    // console.log(duplicate);
+    // console.log(this.manageService.courseList());
+
+    // if (duplicate) {
+    //   alert("This course already exists in this category!");
+    //   return;
+    // }
+
+    // if (this.courseForm.invalid) return;
+
+    // const courseData: Course = this.courseForm.value as Course;
+
+    // if (this.isEditMode()) {
+    //   this.manageService.updateExistingCourse(courseData, this.oldCourseName);
+    // } else {
+    //   this.manageService.addCourse(courseData);
+    // }
 
     this.resetForm();
   }

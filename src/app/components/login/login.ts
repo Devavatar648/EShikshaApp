@@ -40,7 +40,7 @@ export class Login {
         next:(res)=>{
           // console.log(res);
           if(res.result?.token){
-            localStorage.setItem("shtoken", res.result.token);
+            localStorage.setItem("eshikshaToken", res.result.token);
           }
           this.router.navigateByUrl("dashboard");
         },

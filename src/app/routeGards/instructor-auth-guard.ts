@@ -5,15 +5,13 @@ import { User } from '../models/user';
 import { TokenService } from '../services/token-service';
 
 export const instructorAuthGuard: CanMatchFn = (route, segments) => {
-  const token = localStorage.getItem("shtoken");
+  const token = localStorage.getItem("eshikshaToken");
   const tokenService = inject(TokenService);
   const router = inject(Router);
-  let user:any;
+
   if(token){
     const data = tokenService.decodeToken(token);
-    console.log(data);
-    user = data.user;
-    if(user && user.role==="INSTRUCTOR"){
+    if(data && data.role==="INSTRUCTOR"){
       return true;
     }
     return false;

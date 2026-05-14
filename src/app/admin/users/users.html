@@ -49,15 +49,27 @@
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
                                         <img [src]="getAvtarUrl(user.name, user.role)" class="rounded-circle me-3" width="38" height="38">
-                                        <span class="fw-semibold text-dark">{{user.name}}</span>
+                                        <span class="fw-semibold text-dark">
+                                            @if(setEditUser()===user._id){
+                                                <input type="text" [(ngModel)]="userValueForEdit.name">
+                                            }@else{
+                                                {{user.name}}
+                                            }
+                                        </span>
                                     </div>
                                 </td>
                                 <td><span class="badge bg-primary-soft px-3" [ngClass]="user.role==='STUDENT'?'text-info':'text-primary'">{{user.role}}</span></td>
-                                <td class="text-muted">{{user.email}}</td>
+                                <td class="text-muted">
+                                    @if(setEditUser()===user._id){
+                                        <input type="text" [(ngModel)]="userValueForEdit.email">
+                                    }@else{
+                                        {{user.email}}
+                                    }
+                                </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
-                                        <button class="btn btn-sm btn-action me-1" title="Edit" (click)="editUser(user?._id??user.email)"><i class="bi bi-pencil-square"></i></button>
-                                        <button class="btn btn-sm btn-action text-danger" title="Delete" (click)="deleteUser(user?._id??user.email)"><i class="bi bi-trash3"></i></button>
+                                        <button class="btn btn-sm btn-action me-1" title="Edit" (click)="editUser(user, $index)"><i class="bi bi-pencil-square"></i></button>
+                                        <button class="btn btn-sm btn-action text-danger" title="Delete" (click)="deleteUser(user)"><i class="bi bi-trash3"></i></button>
                                     </div>
                                 </td>
                             </tr>

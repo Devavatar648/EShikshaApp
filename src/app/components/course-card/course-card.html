@@ -1,23 +1,50 @@
 <div class="col">
-  <div class="card h-100 border-0 shadow-sm course-card">
-    <div class="position-relative">
-      <img [src]="course()?.img" class="card-img-top p-2 rounded-4" [alt]="course()?.title">
-      @if(course()?.badge){
-        <span class="badge bg-success position-absolute top-0 end-0 m-3 shadow-sm">
-          {{course()?.badge}}
+  <div class="card h-100 border-0 shadow-lg custom-hover-card rounded-4 overflow-hidden">
+    <!-- Image Section with Aspect Ratio Fix -->
+    <div class="position-relative overflow-hidden" style="height: 200px;">
+      <img 
+        [src]="course()?.imageUrl" 
+        class="card-img-top w-100 h-100 object-fit-cover transition-transform" 
+        [alt]="course()?.title"
+        onerror="this.src='https://placehold.co/600x400?text=No+Image+Available'"
+      >
+      <!-- Floating Badge -->
+      <div class="position-absolute top-0 start-0 m-3">
+        <span class="badge rounded-pill bg-dark bg-opacity-75 backdrop-blur px-3 py-2 text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 1px;">
+          {{course()?.category}}
         </span>
-      }
-    </div>
-    <div class="card-body">
-      <div class="d-flex justify-content-between mb-2">
-        <small class="text-success fw-bold">{{course()?.category}}</small>
-        <small class="text-muted"><i class="bi bi-star-fill text-warning"></i> {{course()?.rating}}
-          ({{course()?.enrollments}})</small>
       </div>
-      <h5 class="card-title fw-bold">{{course()?.title}}</h5>
-      <p class="card-text text-muted small">{{course()?.description}}</p>
-      <div class="border-top pt-3 d-flex justify-content-between align-items-center">
-        <button class="btn btn-outline-success btn-sm px-3 rounded-pill">Enroll Now</button>
+    </div>
+
+    <div class="card-body p-4">
+      <!-- Instructor & Rating Row -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <!-- Beautified Instructor -->
+        <div class="d-flex align-items-center">
+          <div class="avatar-circle me-2 bg-success bg-opacity-10 d-flex align-items-center justify-content-center border border-success border-opacity-25">
+             <i class="bi bi-person-fill text-success"></i>
+          </div>
+          <span class="fw-bold text-secondary small">{{course()?.instructor?.name}}</span>
+        </div>
+        
+        <!-- Rating -->
+        <div class="small fw-semibold text-dark">
+          <i class="bi bi-star-fill text-warning me-1"></i>
+          {{course()?.rating?.average}} 
+          <span class="text-muted fw-normal">({{course()?.enrolments}})</span>
+        </div>
+      </div>
+
+      <h5 class="card-title fw-bold text-dark mb-2">{{course()?.title}}</h5>
+      <p class="card-text text-muted small mb-4 line-clamp-2">
+        {{course()?.description?.substring(0,100)}}...
+      </p>
+
+      <div class="d-grid">
+        <a [routerLink]="getCourseDetailsPageLink(course()?._id??'')" 
+           class="btn btn-success btn-lg py-2 rounded-pill fw-bold shadow-sm transition-all">
+           View Course Details
+        </a>
       </div>
     </div>
   </div>

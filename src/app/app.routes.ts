@@ -8,6 +8,7 @@ import { studentRoutes } from './student/student.routes';
 
 export const routes: Routes = [
     {path:"", component:Landing},
+    {path:"coursedetails/:courseId", loadComponent:()=>import("./components/course-details/course-details").then(r=>r.CourseDetails)},
     {path:"login", loadComponent:()=>import("./components/login/login").then(r=>r.Login)},
     {path:"register", loadComponent:()=>import("./components/register/register").then(r=>r.Register)},
     {path:"dashboard", loadChildren:()=>adminRoutes, canMatch:[adminAuthGuard],},
