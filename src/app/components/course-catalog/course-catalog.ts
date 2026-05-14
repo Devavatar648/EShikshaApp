@@ -5,6 +5,7 @@ import { CourseService } from '../../services/course-service';
 import { Course } from '../../models/course';
 import { LoadingService } from '../../services/loading-service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { debounceTime } from 'rxjs';
 
 @Component({
   selector: 'app-course-catalog',
@@ -30,7 +31,11 @@ export class CourseCatalog {
       this.loadingService.isLoading$.next(false);
     })
 
-    this.searchQuery.valueChanges.subscribe(svalue=>{
+    this.searchQuery.valueChanges
+    .pipe(
+      debounceTime(400)
+    )
+    .subscribe(svalue=>{
       this.getCourses(svalue??"");
     })
     
@@ -38,7 +43,6 @@ export class CourseCatalog {
 
 
   getCourses = (val?:string)=>{
-    console.log(val);
     this.courseService.getAllCourses(val).subscribe(res=>{
       this.courseList.set(res.result);
       this.courseService.catalogCourses$.next(res.result);

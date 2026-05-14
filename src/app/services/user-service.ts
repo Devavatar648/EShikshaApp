@@ -36,4 +36,11 @@ export class UserService {
   deleteUser(userId:string):Observable<{result:null, message:string}>{
     return this.httpClient.delete<{result:null, message:string}>(this.apiServices.getFullUrl(`admin/user/${userId}`));
   }
+
+  updateUserSettings(updatedSettings:{email?:string,name?:string,password?:string}):Observable<{result:any, message:string}>{
+    if(!updatedSettings){
+      throw "Please provide some value to update";
+    }
+    return this.httpClient.patch<{result:any, message:string}>(this.apiServices.getFullUrl("users/settings"), updatedSettings);
+  }
 }

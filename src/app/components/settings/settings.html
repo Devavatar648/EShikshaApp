@@ -2,32 +2,12 @@
     <h2 class="h4 mb-4 fw-bold">Account Settings</h2>
     <div class="card border-0 shadow-sm">
         <div class="card-body p-4 p-md-5">
-            <form>
-                <div class="row mb-5 align-items-center">
-                    <div class="col-auto">
-                        <div class="position-relative">
-                            <img src="https://api.dicebear.com/9.x/adventurer/svg?seed=Felix" 
-                                 alt="Avatar" 
-                                 class="rounded-circle border border-3 border-light shadow-sm bg-light profile-avatar-lg">
-                            <label for="avatar-upload" class="btn btn-sm btn-primary position-absolute bottom-0 end-0 rounded-circle shadow p-1 px-2" style="cursor: pointer;">
-                                <i class="bi bi-camera-fill"></i>
-                                <input type="file" id="avatar-upload" class="d-none">
-                            </label>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <h5 class="mb-1">Profile Photo</h5>
-                        <p class="text-muted small mb-0">This will be displayed on your certificates and forum posts.</p>
-                        <button type="button" class="btn btn-link btn-sm text-danger p-0 mt-2 text-decoration-none">Remove photo</button>
-                    </div>
-                </div>
-
                 <div class="row g-4">
                     <div class="col-md-6">
                         <label class="form-label small fw-bold text-uppercase text-muted">Full Name</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-person text-primary"></i></span>
-                            <input type="text" class="form-control" [value]="activeUser.name">
+                            <input type="text" class="form-control" [(ngModel)]="updatedData.name">
                         </div>
                     </div>
                     <div class="col-md-6">
@@ -41,7 +21,7 @@
                         <label class="form-label small fw-bold text-uppercase text-muted">Email Address</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-envelope text-primary"></i></span>
-                            <input type="email" class="form-control" [value]="activeUser.email">
+                            <input type="email" class="form-control" [ngModel]="updatedData.email">
                         </div>
                     </div>
 
@@ -54,23 +34,21 @@
                         <label class="form-label small fw-bold text-uppercase text-muted">New Password</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-lock"></i></span>
-                            <input type="password" class="form-control" placeholder="Leave blank to keep current">
+                            <input type="password" [(ngModel)]="updatedData.password" class="form-control" placeholder="Leave blank to keep current">
                         </div>
                     </div>
                     <div class="col-md-6">
                         <label class="form-label small fw-bold text-uppercase text-muted">Confirm Password</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-lock-fill"></i></span>
-                            <input type="password" class="form-control" placeholder="Confirm new password">
+                            <input type="password" [(ngModel)]="updatedData.confirmPassword" class="form-control" placeholder="Confirm new password">
                         </div>
                     </div>
                 </div>
 
                 <div class="d-flex justify-content-end gap-3 mt-5">
-                    <button type="button" class="btn btn-light px-4 border">Discard Changes</button>
-                    <button type="submit" class="btn btn-primary px-4 fw-bold">Update Profile</button>
+                    <button type="submit" class="btn btn-primary px-4 fw-bold" (click)="updateProfile()">Update Profile</button>
                 </div>
-            </form>
         </div>
     </div>
 </div>
