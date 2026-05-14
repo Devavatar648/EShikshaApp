@@ -27,7 +27,6 @@ export class CourseService {
   getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[]}, message:string}>{
     return this.httpClient.get<{result:{course:Course,assignments:Assignments[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
   }
-
   
 
   getCourseEndpoint(endpoint:string):string{
