@@ -9,21 +9,21 @@
         <!-- Left: Course Narrative -->
         <div class="col-lg-7">
           <span class="badge rounded-pill bg-success mb-3 px-3 py-2 text-uppercase fw-bold ls-1">
-            {{ data.course.category }}
+            {{ data?.course?.category }}
           </span>
           
-          <h1 class="display-3 fw-bold mb-4">{{ data.course.title }}</h1>
+          <h1 class="display-3 fw-bold mb-4">{{ data?.course?.title }}</h1>
           
           <div class="d-flex align-items-center gap-4 mb-4">
             <div class="d-flex align-items-center">
               <i class="bi bi-star-fill text-warning me-2"></i>
-              <span class="fw-bold fs-5">{{ data.course.rating.average }}</span>
-              <span class="ms-1 opacity-75">({{ data.course.rating.totalUsers }} reviews)</span>
+              <span class="fw-bold fs-5">{{ data?.course?.rating?.average }}</span>
+              <span class="ms-1 opacity-75">({{ data?.course?.rating?.totalUsers }} reviews)</span>
             </div>
             <div class="vr opacity-50"></div>
             <div>
               <i class="bi bi-people-fill me-2 text-info"></i>
-              <span class="fw-bold">{{ data.course.enrolments }}</span> Students
+              <span class="fw-bold">{{ data?.course?.enrolments }}</span> Students
             </div>
           </div>
 
@@ -34,7 +34,7 @@
             </div>
             <div>
               <p class="mb-0 small opacity-75">Expert Instructor</p>
-              <h6 class="mb-0 fw-bold">{{ data.course.instructor.name }}</h6>
+              <h6 class="mb-0 fw-bold">{{ data?.course?.instructor?.name }}</h6>
             </div>
           </div>
         </div>
@@ -64,7 +64,7 @@
         <section class="mb-5">
           <h3 class="fw-bold mb-4 border-start border-4 border-success ps-3">About this Course</h3>
           <p class="fs-5 text-secondary lh-lg">
-            {{ data.course.description }}
+            {{ data?.course?.description }}
           </p>
         </section>
 

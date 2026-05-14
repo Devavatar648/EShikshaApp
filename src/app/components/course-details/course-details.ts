@@ -22,7 +22,7 @@ export class CourseDetails {
       this.selectedCourse.set(res.result);
     })
   }
-
+ 
   hasAccess=():boolean=>{
     return localStorage.getItem("eshikshaToken")?true:false;
   }
