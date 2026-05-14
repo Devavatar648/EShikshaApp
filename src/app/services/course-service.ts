@@ -13,13 +13,16 @@ export class CourseService {
   httpClient = inject(HttpClient);
   apiServices = inject(ApiServices);
 
-  instructorCourses$ = new BehaviorSubject<Course[]>([]);
+  instructorCourses$ = new BehaviorSubject<Course[]|null>(null);
   catalogCourses$ = new BehaviorSubject<Course[]>([]);
 
-  getAllCourses(title?:string):Observable<{result:Course[],message:string}>{
+  getAllCourses(title?:string,instructor?:string):Observable<{result:Course[],message:string}>{
     let params = new HttpParams();
-    if(title){
-      params = params.append("title",title);
+    if(title && title.length>0){
+      params = params.set("title",title);
+    }
+    if(instructor){
+      params=params.set("instructor",instructor);
     }
     return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint('')), {params});
   }
@@ -27,8 +30,14 @@ export class CourseService {
   getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[]}, message:string}>{
     return this.httpClient.get<{result:{course:Course,assignments:Assignments[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
   }
-  
 
+  createCourse(course:Course):Observable<{result:Course, message:string}>{
+    return this.httpClient.post<{result:Course, message:string}>(this.apiServices.getFullUrl("instructor/course"),course);
+  }
+  updateCourse(updatedData:{courseName:string,coursecategory:string, courseDescription:string, imgUrl:string},courseId:string):Observable<{result:{course:Course}, message:string}>{
+    return this.httpClient.patch<{result:{course:Course}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`course/${courseId}`)),updatedData);
+  }
+  
   getCourseEndpoint(endpoint:string):string{
     return `course/${endpoint}`;
   }
