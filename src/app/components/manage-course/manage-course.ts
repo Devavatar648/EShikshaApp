@@ -2,6 +2,9 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Course } from '../../models/course';
 import { CourseService } from '../../services/course-service';
+import { UserService } from '../../services/user-service';
+import { ToastrService } from 'ngx-toastr';
+import { required } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-manage-course',
@@ -12,70 +15,79 @@ import { CourseService } from '../../services/course-service';
 export class ManageCourse {
   private fb = inject(FormBuilder);
   private courseService = inject(CourseService);
+  private userService=inject (UserService);
+  private toastService=inject(ToastrService);
+
 
   isEditMode = signal(false);
   oldCourseName = ""; // Used to find the course in the list if the name is changed
   
 
   courseForm = this.fb.group({
-    cName: ['', Validators.required],
-    cCategory: ['', Validators.required],
-    cDescription: ['', Validators.required],
+    title: ['', Validators.required],
+    category: ['', Validators.required],
+    description: ['', Validators.required],
+    imageUrl:['',Validators.required]
   });
 
   courseList = signal<Course[]>([]);
 
   ngOnInit(){
     this.courseService.instructorCourses$.subscribe(res=>{
-      this.courseList.set(res);
+      if(!res){
+        this.userService.activeUser$.subscribe(user=>{
+          this.courseService.getAllCourses("",user?._id).subscribe({
+            next:courseResult=>{
+              this.courseService.instructorCourses$.next(courseResult.result);
+              this.courseList.set(courseResult.result)
+              console.log(this.courseList());
+            },
+            error:err=>{
+              this.toastService.error(err.error.message??"Internal Server Error");
+            }
+          })
+        })
+      }else{
+        this.courseList.set(res);
+      }
     })
+    
   }
 
   onSubmit() {
-    // 3. Final logic check before submission
-    // const name = this.courseForm.value.cName;
-    // const category = this.courseForm.value.cCategory;
+    console.log(this.courseForm.value);
+    const {title,category,description ,imageUrl}=this.courseForm.value;
+    if(title && category && description && imageUrl){
 
-    // console.log(name, category);
-
-    // const duplicate = this.courseService.courseList().find(c => 
-    //   c.cName.toLowerCase().trim() === name?.toLowerCase().trim() && 
-    //   c.cCategory.toLocaleLowerCase() === category?.toLowerCase()
-    // );
-    // console.log(duplicate);
-    // console.log(this.manageService.courseList());
-
-    // if (duplicate) {
-    //   alert("This course already exists in this category!");
-    //   return;
-    // }
-
-    // if (this.courseForm.invalid) return;
-
-    // const courseData: Course = this.courseForm.value as Course;
-
-    // if (this.isEditMode()) {
-    //   this.manageService.updateExistingCourse(courseData, this.oldCourseName);
-    // } else {
-    //   this.manageService.addCourse(courseData);
-    // }
-
-    this.resetForm();
+      this.courseService.createCourse(new Course(title,category,description,imageUrl)).subscribe({
+        next:res=>{
+          const courses=this.courseList();
+          courses.push(res.result)
+          this.courseList.set(courses);
+          this.toastService.success(res.message);
+          this.resetForm();
+        },
+        error:err=>{
+          this.toastService.error(err.error.message??"Internal Server Error");
+        }
+      })
+    }
   }
 
-  editCourse(course: any) {
-    this.isEditMode.set(true);
-    this.oldCourseName = course.cName;
-    this.courseForm.patchValue({
-      cName: course.cName,
-      cCategory: course.cCategory,
-      cDescription: course.cDescription
-    });
+   editCourse(course: any) {
+  //   this.isEditMode.set(true);
+  //   this.oldCourseName = course.cName;
+  //   this.courseForm.patchValue({
+  //     title: course.cName,
+  //     category: course.cCategory,
+  //     description: course.cDescription
+  //   });
   }
    
   deleteCourse(name: string) {
-    this.removeCourse(name);
-    if (this.oldCourseName === name) this.resetForm();
+    // this.removeCourse(name);
+    // if (this.oldCourseName === name) this.resetForm();
+    console.log(name);
   }
   
   resetForm() {
