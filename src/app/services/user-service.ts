@@ -11,7 +11,7 @@ import { User } from '../models/user';
 export class UserService {
   private httpClient = inject(HttpClient);
   private apiServices = inject(ApiServices);
-  activeUser$ = new BehaviorSubject<(User&{id:string})|null>(null);
+  activeUser$ = new BehaviorSubject<User|null>(null);
 
   login(user:AuthUser):Observable<{result:{token:string}, message:string}>{
     return this.httpClient.post<{result:{token:string}, message:string}>(this.apiServices.getFullUrl("auth/login"), user);
@@ -41,6 +41,10 @@ export class UserService {
     if(!updatedSettings){
       throw "Please provide some value to update";
     }
-    return this.httpClient.patch<{result:any, message:string}>(this.apiServices.getFullUrl("users/settings"), updatedSettings);
+    return this.httpClient.patch<{result:any, message:string}>(this.apiServices.getFullUrl("user/settings"), updatedSettings);
+  }
+
+  getUserSettings():Observable<{result:User, message:string}>{
+    return this.httpClient.get<{result:User, message:string}>(this.apiServices.getFullUrl("user/settings"));
   }
 }

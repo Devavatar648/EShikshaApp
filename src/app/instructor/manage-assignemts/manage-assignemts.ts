@@ -3,6 +3,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CourseService } from '../../services/course-service';
 import { map } from 'rxjs';
+import { Course } from '../../models/course';
 import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -55,7 +56,6 @@ export class ManageAssignemts {
           this.instructorCourses.set(courses)
         }
       })
-
     //======================================================================================
 
     this.assignmentForm = this.fb.group({
@@ -115,6 +115,7 @@ export class ManageAssignemts {
     const formattedDate = String(assignment.dueDate).split('T')[0];
 
     this.assignmentForm.patchValue({
+      courseId: assignment.courseId, 
       title: assignment.title,
       dueDate: formattedDate,
       totalMarks: assignment.totalMarks
@@ -189,6 +190,8 @@ export class ManageAssignemts {
       });
     }
   }
+
+
 
   onFileSelected(event: any) {
     const file = event.target.files[0];

@@ -9,6 +9,7 @@
 
         <div class="mb-3">
           <label class="form-label fw-bold text-success">1. Select Course</label>
+
           <select formControlName="courseId" class="form-select border-success shadow-sm">
             <option value="" disabled>-- Choose one of your launched courses --</option>
 
@@ -41,10 +42,22 @@
           @if(title?.touched && title?.hasError('minlength')){
           <p class="text text-danger">Title should be of minimum 5 characters</p>
           }
-
-
         </div>
+      
 
+        <hr class="my-4">
+
+        @if(assignmentForm.get('courseId')?.value){
+          <label class="form-label fw-bold text-success">2. Assessment Details</label>
+
+          <div class="mb-3 mt-2">
+            <label class="form-label fw-semibold">Title</label>
+            <input type="text" formControlName="title" class="form-control border-success-subtle"
+              placeholder="Enter Assignment Title...">
+
+            @if(title?.touched && title?.hasError('minlength')){
+            <p class="text text-danger">Title should be of minimum 5 characters</p>
+            }
         <div class="row">
           <div class="col-md-6 mb-3">
             <label class="form-label fw-semibold">Due Date</label>
@@ -69,7 +82,6 @@
           {{ isEditMode ? 'Update Assessment' : 'Publish to Students' }}
         </button>
         }
-
       </form>
 
     </div>
@@ -81,7 +93,6 @@
   <div class="row">
     <div class="container mt-5 col-md-6">
       <h4 class="text-muted mb-4">Published Assessments For : {{getCourseName(assignmentForm.get('courseId')?.value)}}</h4>
-
       @if(publishedAssignments().length === 0){
       <div class="text-center py-4 border rounded bg-light">
         <p class="text-muted mb-0">No assignments published yet.</p>
@@ -131,3 +142,4 @@
   </div>
   </div>
 }
+

@@ -15,10 +15,10 @@
 
         <div class="mb-4">
           <label class="form-label fw-bold text-success">1. SELECT COURSE</label>
-          <select formControlName="courseId" class="form-select border-success shadow-sm">
+          <select formControlName="courseId" class="form-select border-success shadow-sm" (change)="getQuizesByCourseId($event)">
             <option value="" disabled>-- Choose one of your launched courses --</option>
-            @for(course of instructorCourses; track course.id){
-              <option [value]="course.id">{{ course.name }}</option>
+            @for(course of instructorCourses(); track course.id){
+              <option [value]="course.id">{{ course.title }}</option>
             }
           </select>
         </div>
@@ -86,7 +86,7 @@
     </div>
 
     <div class="row">
-      <div class="col-md-4 mb-4" *ngFor="let quiz of quizList;let i=index">
+      <div class="col-md-4 mb-4" *ngFor="let quiz of quizList();let i=index">
         <div class="card h-100 border-0 shadow-sm" style="border-radius: 12px; border-top: 5px solid #198754;">
           <div class="card-body">
             <div class="mb-2">

@@ -21,15 +21,13 @@
                         <label class="form-label small fw-bold text-uppercase text-muted">Email Address</label>
                         <div class="input-group">
                             <span class="input-group-text bg-white"><i class="bi bi-envelope text-primary"></i></span>
-                            <input type="email" class="form-control" [ngModel]="updatedData.email">
+                            <input type="email" class="form-control" [(ngModel)]="updatedData.email">
                         </div>
                     </div>
-
                     <div class="col-12 pt-3">
                         <hr class="text-muted opacity-25">
                         <h5 class="mt-4 mb-3">Security & Password</h5>
                     </div>
-
                     <div class="col-md-6">
                         <label class="form-label small fw-bold text-uppercase text-muted">New Password</label>
                         <div class="input-group">
@@ -45,7 +43,6 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="d-flex justify-content-end gap-3 mt-5">
                     <button type="submit" class="btn btn-primary px-4 fw-bold" (click)="updateProfile()">Update Profile</button>
                 </div>
