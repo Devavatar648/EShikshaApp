@@ -46,7 +46,6 @@ export class AssignmentService {
   // }
 
 
-
   // updateAssignment(assignment: Assignments, courseId: string,id:string) {
   //   return this.httpClient.patch<{ result: any, message: string }>(this.apiServices.getFullUrl(`instructor/course/${courseId}/assignment/${id}`), assignment)
   // }
@@ -64,7 +63,6 @@ export class AssignmentService {
     const url = this.apiServices.getFullUrl(`instructor/course/${courseId}/assignment/download/${fileId}`);
     window.open(url, '_blank');
   }
-
 
 
 }
