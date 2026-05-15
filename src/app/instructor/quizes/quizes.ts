@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 
 @Component({
@@ -9,13 +9,20 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
   styleUrl: './quizes.css',
 })
 export class Quizes {
-  quizForm!: FormGroup;
+   quizForm!: FormGroup;
   quizList: any[] = [];
   isEditing = false;
   editingIndex: number | null = null;
   selectedQuiz: any = null; 
 
-  constructor(private fb: FormBuilder) {}
+  fb=inject(FormBuilder)
+
+  // API DATA - Mocked for consistency
+  instructorCourses = [
+    { id: 101, name: 'Full Stack Web Mastery' },
+    { id: 102, name: 'Python for Data Analysis' },
+    { id: 103, name: 'UI/UX Design Fundamentals' }
+  ];
 
   ngOnInit(): void {
     this.initForm();
@@ -24,8 +31,9 @@ export class Quizes {
 
   initForm() {
     this.quizForm = this.fb.group({
+      courseId: ['', Validators.required],
       title: ['', Validators.required],
-      totalMarks: [null, [Validators.required, Validators.min(1)]],
+      markPerQuestion: [null, [Validators.required, Validators.min(1)]],
       timeLimit: [null, [Validators.required, Validators.min(1)]],
       questions: this.fb.array([])
     });
@@ -33,6 +41,24 @@ export class Quizes {
 
   get questions() {
     return this.quizForm.get('questions') as FormArray;
+  }
+
+  
+get filteredQuizzes() {
+  const selectedCourseId = this.quizForm.get('courseId')?.value;
+
+  // If 'all' is selected or nothing is selected, show every quiz
+  if (!selectedCourseId || selectedCourseId === 'all') {
+    return this.quizList;
+  }
+
+  
+  return this.quizList.filter(q => q.courseId == selectedCourseId);
+}
+
+  
+  getCourseName(id: number) {
+    return this.instructorCourses.find(c => c.id == id)?.name || 'Course';
   }
 
   addQuestion() {
@@ -55,16 +81,17 @@ export class Quizes {
     if (this.quizForm.invalid) return;
 
     if (this.isEditing && this.editingIndex !== null) {
-     
       this.quizList[this.editingIndex] = this.quizForm.value;
       this.isEditing = false;
       this.editingIndex = null;
     } else {
-     
       this.quizList.push(this.quizForm.value);
     }
 
+    // Reset but keep the course selected for better UX
+    const currentCourse = this.quizForm.get('courseId')?.value;
     this.resetForm();
+    this.quizForm.patchValue({ courseId: currentCourse });
   }
 
   editQuiz(index: number) {
@@ -72,16 +99,15 @@ export class Quizes {
     this.editingIndex = index;
     const quiz = this.quizList[index];
 
-    
     this.questions.clear();
     quiz.questions.forEach((q: any) => {
       this.questions.push(this.fb.group(q));
     });
 
-    
     this.quizForm.patchValue({
+      courseId: quiz.courseId, // Added
       title: quiz.title,
-      totalMarks: quiz.totalMarks,
+      markPerQuestion: quiz.markPerQuestion,
       timeLimit: quiz.timeLimit
     });
     
@@ -93,9 +119,9 @@ export class Quizes {
       this.quizList.splice(index, 1);
     }
   }
+  
   viewQuiz(quiz: any) {
     this.selectedQuiz = quiz;
-  
   }
 
   resetForm() {
@@ -104,5 +130,15 @@ export class Quizes {
     this.quizForm.reset();
     this.questions.clear();
     this.addQuestion();
+  }
+
+  getCurrentDate(): string {
+    
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = (today.getDate()+3).toString().padStart(2, '0');
+
+    return `${year}-${month}-${day}`;
   }
 }
