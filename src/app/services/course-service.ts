@@ -34,9 +34,11 @@ export class CourseService {
   createCourse(course:Course):Observable<{result:Course, message:string}>{
     return this.httpClient.post<{result:Course, message:string}>(this.apiServices.getFullUrl("instructor/course"),course);
   }
-  updateCourse(updatedData:{courseName:string,coursecategory:string, courseDescription:string, imgUrl:string},courseId:string):Observable<{result:{course:Course}, message:string}>{
-    return this.httpClient.patch<{result:{course:Course}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`course/${courseId}`)),updatedData);
+  updateCourse(courseId:string,updatedData:{courseName?:string,coursecategory?:string, courseDescription?:string, image?:string}):Observable<{result:{course:Course}, message:string}>{
+    return this.httpClient.patch<{result:{course:Course}, message:string}>(this.apiServices.getFullUrl(`instructor/course/${courseId}`),updatedData);
   }
+  
+  // deleteCourse(courseId:string)<>{}
   
   getCourseEndpoint(endpoint:string):string{
     return `course/${endpoint}`;
