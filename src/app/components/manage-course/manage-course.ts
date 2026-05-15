@@ -50,10 +50,9 @@ export class ManageCourse {
       }else{
         this.courseList.set(res);
       }
-    })
-    
+    })  
   }
-
+   
   onSubmit() {
     console.log(this.courseForm.value);
     const {title,category,description ,imageUrl}=this.courseForm.value;
@@ -73,15 +72,16 @@ export class ManageCourse {
       })
     }
   }
-
-   editCourse(course: any) {
-  //   this.isEditMode.set(true);
-  //   this.oldCourseName = course.cName;
-  //   this.courseForm.patchValue({
-  //     title: course.cName,
-  //     category: course.cCategory,
-  //     description: course.cDescription
-  //   });
+ 
+  editCourse(course: any) {
+    
+  this.isEditMode.set(true);
+    this.oldCourseName = course.title;
+    this.courseForm.patchValue({
+      title: course.title,
+      category: course.category,
+      description: course.description
+    });
   }
    
   deleteCourse(name: string) {
