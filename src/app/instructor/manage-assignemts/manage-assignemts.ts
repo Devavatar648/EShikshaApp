@@ -3,7 +3,6 @@ import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CourseService } from '../../services/course-service';
 import { map } from 'rxjs';
-import { Course } from '../../models/course';
 import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
 
@@ -14,7 +13,7 @@ interface Assignment {
   dueDate: Date;
   totalMarks: number;
   courseId: number;
-  file: string 
+  file: string
 }
 
 @Component({
@@ -27,17 +26,17 @@ export class ManageAssignemts {
   private fb = inject(FormBuilder);
   private courseService = inject(CourseService);
   private assignmentService = inject(AssignmentService);
-  private toastService=inject(ToastrService);
+  private toastService = inject(ToastrService);
 
   assignmentForm!: FormGroup;
-  publishedAssignments: Assignment[] = [];
+  publishedAssignments = signal<Assignment[]>([]);
 
   isEditMode = false;
-  currentEditId: string | null = null;
+  currentEditAssignmentId: string | null = null;
   selectedFile: File | null = null;
 
   //API DATA
-  instructorCourses = signal<{ id: string, title: string }[]>([]);
+  instructorCourses = signal<{ id: string, title: string, category: string }[]>([]);
 
   //Getting instructor courses ==========================================================
   ngOnInit() {
@@ -47,7 +46,7 @@ export class ManageAssignemts {
           if (!carray) {
             return [];
           }
-          return carray.map(c => ({ id: c._id??"", title: c.title }))
+          return carray.map(c => ({ id: c._id ?? "", title: c.title, category: c.category }))
         }
         )
       )
@@ -57,7 +56,7 @@ export class ManageAssignemts {
         }
       })
 
-  //======================================================================================
+    //======================================================================================
 
     this.assignmentForm = this.fb.group({
       courseId: ['', Validators.required],
@@ -68,14 +67,18 @@ export class ManageAssignemts {
 
     this.assignmentForm.get('courseId')?.valueChanges.subscribe(courseId => {
       if (courseId) {
+        console.log("running");
         this.assignmentService.searchAssignment(courseId).subscribe({
-          next: (res) => this.publishedAssignments = res.result,
-          error: (err) => this.publishedAssignments = [] // Clear if none found
+          next: (res) => {
+            console.log(res.result);
+            this.publishedAssignments.set(res.result);
+          },
+          error: (err) => this.publishedAssignments.set([]) // Clear if none found
         });
       }
     });
   }
-  
+
   getCourseName(id: string) {
     return this.instructorCourses().find(c => c.id == id)?.title || 'Selected Course';
   }
@@ -95,11 +98,31 @@ export class ManageAssignemts {
   get filteredAssignments() {
     const selectedCourseId = this.assignmentForm.get('courseId')?.value;
     if (!selectedCourseId) return [];
-    return this.publishedAssignments.filter(a => a.courseId == selectedCourseId);
+    return this.publishedAssignments().filter(a => a.courseId === selectedCourseId);
   }
 
   //==========================================================================================
 
+  onEdit(assignment: Assignment) {
+    window.scrollTo({
+      top: 10,       // vertical position in pixels
+      behavior: 'smooth' // smooth animation
+    });
+
+    this.isEditMode = true;
+    this.currentEditAssignmentId = assignment._id || null;
+
+    const formattedDate = String(assignment.dueDate).split('T')[0];
+
+    this.assignmentForm.patchValue({
+      title: assignment.title,
+      dueDate: formattedDate,
+      totalMarks: assignment.totalMarks
+
+    });
+  }
+
+  //================================================================================
 
   onPublish() {
     if (this.assignmentForm.invalid) return;
@@ -114,9 +137,9 @@ export class ManageAssignemts {
       formData.append('myFile', this.selectedFile);
     }
 
-    if (this.isEditMode && this.currentEditId) {
+    if (this.isEditMode && this.currentEditAssignmentId) {
       // Call Update API
-      this.assignmentService.updateAssignments(formData, courseId, this.currentEditId).subscribe({
+      this.assignmentService.updateAssignments(formData, courseId, this.currentEditAssignmentId).subscribe({
         next: (res) => {
           this.toastService.success("Updated successfully");
           this.resetForm();
@@ -126,35 +149,19 @@ export class ManageAssignemts {
       });
 
     } else {
-      // Call Create API (Existing logic)
-      if (!this.selectedFile){
+      if (!this.selectedFile) {
         this.toastService.warning("Please select a PDF")
-        return ;
-        };
+        return;
+      };
 
       this.assignmentService.addAssignments(formData, courseId).subscribe({
         next: (res) => {
-          this.publishedAssignments.push(res.result);
+          this.publishedAssignments().push(res.result);
           this.assignmentForm.reset({ courseId: courseId });
           this.selectedFile = null;
         }
       });
     }
-  }
-
-
-  onEdit(assignment: Assignment) {
-    this.isEditMode = true;
-    this.currentEditId = assignment._id || null;
-    
-    const formattedDate = String(assignment.dueDate).split('T')[0];
-
-    this.assignmentForm.patchValue({
-      courseId: assignment.courseId, 
-      title: assignment.title,
-      dueDate: formattedDate,
-      totalMarks: assignment.totalMarks
-    });
   }
 
 
@@ -170,18 +177,18 @@ export class ManageAssignemts {
   // }
 
   onDelete(id: string | undefined) {
+    console.log(id);
     const courseId = this.assignmentForm.get('courseId')?.value;
     if (id && courseId && confirm('Permanently delete this assessment?')) {
       this.assignmentService.deleteAssignment(id, courseId).subscribe({
         next: () => {
-          this.publishedAssignments = this.publishedAssignments.filter(a => a._id !== id);
+          this.publishedAssignments.set(this.publishedAssignments().filter(a => a._id !== id));
+          this.toastService.success("assignment deleted")
         },
         error: (err) => alert("Delete failed")
       });
     }
   }
-
-
 
   onFileSelected(event: any) {
     const file = event.target.files[0];
@@ -192,17 +199,45 @@ export class ManageAssignemts {
 
   resetForm() {
     this.isEditMode = false;
-    this.currentEditId = null;
-    this.selectedFile=null;
+    this.currentEditAssignmentId = null;
+    this.selectedFile = null;
     this.assignmentForm.reset();
   }
 
 
+  // onDownload(assignment: any) {
+  //   const courseId = this.assignmentForm.get('courseId')?.value;
+  //   if (assignment.file && courseId) {
+  //     this.assignmentService.downloadAssignment(courseId, assignment.file);
+  //   }
+  // }
+
+  
   onDownload(assignment: any) {
     const courseId = this.assignmentForm.get('courseId')?.value;
-    if (assignment.file && courseId) {
-      this.assignmentService.downloadAssignment(courseId, assignment.file);
-    }
+    if (!assignment.file || !courseId) return;
+
+    this.assignmentService.downloadAssignment(courseId, assignment.file).subscribe({
+      next: (blob: Blob) => {
+        // 1. Create a temporary local URL for the downloaded blob
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        // 2. Create an invisible anchor tag to trigger the download automatically
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = assignment.file || 'assignment.pdf';
+
+        // 3. Trigger the download execution and clean up memory
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      },
+      error: (err) => {
+        console.error('Download failed', err);
+        this.toastService.error("Failed to download file.");
+      }
+    });
   }
 
   getCurrentDate(): string {
@@ -212,7 +247,20 @@ export class ManageAssignemts {
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = (today.getDate() + 3).toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
-    
+
   }
+
+
+  // getAssignments(event:any){
+  //   this.assignmentService.searchAssignment(event.target.value).subscribe({
+  //     next:res=>{
+  //       this.publishedAssignments.set(res.result);
+  //       this.toastService.success(res.message);
+  //     },
+  //     error:err=>{
+  //       this.toastService.error(err.error.message||"Internal server error");
+  //     }
+  //   })
+  // }
 
 }
