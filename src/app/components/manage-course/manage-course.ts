@@ -5,6 +5,7 @@ import { CourseService } from '../../services/course-service';
 import { UserService } from '../../services/user-service';
 import { ToastrService } from 'ngx-toastr';
 import { required } from '@angular/forms/signals';
+import { isArray } from 'chart.js/helpers';
 
 @Component({
   selector: 'app-manage-course',
@@ -68,7 +69,12 @@ export class ManageCourse {
           this.resetForm();
         },
         error:err=>{
-          this.toastService.error(err.error.message??"Internal Server Error");
+          console.log(err);
+          if(isArray(err.error.message)){
+            err.error.message.forEach((e:any)=>this.toastService.error(e.msg));
+          }else{
+            this.toastService.error(err.error.message??"Internal Server Error");
+          }
         }
       })
     }
