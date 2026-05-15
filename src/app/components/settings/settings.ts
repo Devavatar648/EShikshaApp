@@ -15,6 +15,7 @@ export class Settings {
   private toastService = inject(ToastrService);
 
   activeUser!:User;
+  
   updatedData = {
     name:"",
     email:"",

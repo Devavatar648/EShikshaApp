@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CourseService } from '../../services/course-service';
+import { map } from 'rxjs';
+import { QuizService } from '../../services/quiz-service';
 
 @Component({
   selector: 'app-quizes',
@@ -9,8 +12,11 @@ import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } fr
   styleUrl: './quizes.css',
 })
 export class Quizes {
+  private courseService = inject(CourseService);
+  private quizService = inject(QuizService);
+
    quizForm!: FormGroup;
-  quizList: any[] = [];
+  quizList = signal<any[]>([]);
   isEditing = false;
   editingIndex: number | null = null;
   selectedQuiz: any = null; 
@@ -18,13 +24,25 @@ export class Quizes {
   fb=inject(FormBuilder)
 
   // API DATA - Mocked for consistency
-  instructorCourses = [
-    { id: 101, name: 'Full Stack Web Mastery' },
-    { id: 102, name: 'Python for Data Analysis' },
-    { id: 103, name: 'UI/UX Design Fundamentals' }
-  ];
+  instructorCourses = signal<{ id: string, title: string }[]>([]);
 
   ngOnInit(): void {
+    this.courseService.instructorCourses$
+      .pipe(
+        map((carray) => {
+          if (!carray) {
+            return [];
+          }
+          return carray.map(c => ({ id: c._id??"", title: c.title }))
+        }
+        )
+      )
+      .subscribe(courses => {
+        if (courses) {
+          this.instructorCourses.set(courses)
+        }
+      })
+
     this.initForm();
     this.addQuestion();
   }
@@ -53,12 +71,12 @@ get filteredQuizzes() {
   }
 
   
-  return this.quizList.filter(q => q.courseId == selectedCourseId);
+  return this.quizList().filter(q => q.courseId == selectedCourseId);
 }
 
   
-  getCourseName(id: number) {
-    return this.instructorCourses.find(c => c.id == id)?.name || 'Course';
+  getCourseName(id: string) {
+    return this.instructorCourses().find(c => c.id == id)?.title || 'Course';
   }
 
   addQuestion() {
@@ -81,11 +99,11 @@ get filteredQuizzes() {
     if (this.quizForm.invalid) return;
 
     if (this.isEditing && this.editingIndex !== null) {
-      this.quizList[this.editingIndex] = this.quizForm.value;
+      this.quizList()[this.editingIndex] = this.quizForm.value;
       this.isEditing = false;
       this.editingIndex = null;
     } else {
-      this.quizList.push(this.quizForm.value);
+      this.quizList().push(this.quizForm.value);
     }
 
     // Reset but keep the course selected for better UX
@@ -97,7 +115,7 @@ get filteredQuizzes() {
   editQuiz(index: number) {
     this.isEditing = true;
     this.editingIndex = index;
-    const quiz = this.quizList[index];
+    const quiz = this.quizList()[index];
 
     this.questions.clear();
     quiz.questions.forEach((q: any) => {
@@ -116,7 +134,7 @@ get filteredQuizzes() {
 
   deleteQuiz(index: number) {
     if (confirm('Are you sure you want to delete this quiz?')) {
-      this.quizList.splice(index, 1);
+      this.quizList().splice(index, 1);
     }
   }
   
@@ -140,5 +158,17 @@ get filteredQuizzes() {
     const day = (today.getDate()+3).toString().padStart(2, '0');
 
     return `${year}-${month}-${day}`;
+  }
+
+  getQuizesByCourseId(event:any){
+    console.log(event.target.value);
+    this.quizService.getQuizes(event.target.value).subscribe({
+      next:res=>{
+        this.quizList.set(res.result);
+      },
+      error:err=>{
+        console.log(err);
+      }
+    })
   }
 }
