@@ -22,7 +22,7 @@ export class ManageCourse {
 
   isEditMode = signal(false);
   oldCourseName = ""; // Used to find the course in the list if the name is changed
-  
+  courseId="";
 
   courseForm = this.fb.group({
     title: ['', Validators.required],
@@ -51,15 +51,44 @@ export class ManageCourse {
       }else{
         this.courseList.set(res);
       }
-    })
-    
+    })  
   }
-
+   
   onSubmit() {
     console.log(this.courseForm.value);
     const {title,category,description ,imageUrl}=this.courseForm.value;
-    if(title && category && description && imageUrl){
 
+    const updatedData={
+      courseName:title??"",
+      coursecategory:category??"",
+      courseDescription:description??"",
+      image:imageUrl??""
+    }
+  
+    if(this.isEditMode()){
+      this.courseService.updateCourse(this.courseId,updatedData ).subscribe({
+         next:res=>{
+          console.log(res);
+          const updatedCourse=res.result.course;
+          console.log(updatedCourse);
+          const courses=this.courseList().map(c =>c._id===updatedCourse._id?updatedCourse:c
+          )
+         this.courseList.set(courses);
+          this.toastService.success(res.message);
+          this.resetForm();
+        },
+        error:err=>{
+          console.log(err);
+          if(isArray(err.error.message)){
+            err.error.message.forEach((e:any)=>this.toastService.error(e.msg));
+          }else{
+            this.toastService.error(err.error.message??"Internal Server Error");
+          }
+        }
+      })
+    }
+    else{
+    if(title && category && description && imageUrl){  
       this.courseService.createCourse(new Course(title,category,description,imageUrl)).subscribe({
         next:res=>{
           const courses=this.courseList();
@@ -79,15 +108,20 @@ export class ManageCourse {
       })
     }
   }
+  }
+ 
+  editCourse(course: any) {
+  this.isEditMode.set(true);
+    this.oldCourseName = course.title;
+    this.courseForm.patchValue({
+      title: course.title,
+      category: course.category,
+      description: course.description
+    });
+    console.log(course);
+    console.log(course._id);
 
-   editCourse(course: any) {
-  //   this.isEditMode.set(true);
-  //   this.oldCourseName = course.cName;
-  //   this.courseForm.patchValue({
-  //     title: course.cName,
-  //     category: course.cCategory,
-  //     description: course.cDescription
-  //   });
+    this.courseId=course._id;
   }
    
   deleteCourse(name: string) {
