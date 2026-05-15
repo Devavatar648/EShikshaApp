@@ -41,6 +41,6 @@ export class UserService {
     if(!updatedSettings){
       throw "Please provide some value to update";
     }
-    return this.httpClient.patch<{result:any, message:string}>(this.apiServices.getFullUrl("users/settings"), updatedSettings);
+    return this.httpClient.patch<{result:any, message:string}>(this.apiServices.getFullUrl("user/settings"), updatedSettings);
   }
 }
