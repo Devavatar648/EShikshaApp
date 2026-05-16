@@ -203,31 +203,31 @@ export class ManageAssignemts {
 
 
   onDownload(assignment: any) {
-    // const courseId = this.assignmentForm.get('courseId')?.value;
-    // if (!assignment.file || !courseId) return;
+    const courseId = this.assignmentForm.get('courseId')?.value;
+    if (!assignment.file || !courseId) return;
 
-    // this.assignmentService.downloadAssignment(courseId, assignment.file).subscribe({
-    //   next: (blob: Blob) => {
+    this.assignmentService.downloadAssignment(courseId, assignment.file).subscribe({
+      next: (blob: Blob) => {
 
-    //     const downloadUrl = window.URL.createObjectURL(blob);
-
-
-    //     const link = document.createElement('a');
-    //     link.href = downloadUrl;
-    //     link.download = assignment.file || 'assignment.pdf';
+        const downloadUrl = window.URL.createObjectURL(blob);
 
 
-    //     document.body.appendChild(link);
-    //     link.click();
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = assignment.file || 'assignment.pdf';
 
-    //     document.body.removeChild(link);
-    //     window.URL.revokeObjectURL(downloadUrl);
-    //   },
-    //   error: (err) => {
-    //     console.error('Download failed', err);
-    //     this.toastService.error("Failed to download file.");
-    //   }
-    // });
+
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      },
+      error: (err) => {
+        console.error('Download failed', err);
+        this.toastService.error("Failed to download file.");
+      }
+    });
   }
 
 
