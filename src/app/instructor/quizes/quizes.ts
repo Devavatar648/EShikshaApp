@@ -68,24 +68,6 @@ export class Quizes {
     return this.questions.at(questionIndex).get('options') as FormArray;
   }
 
-  
-// get filteredQuizzes() {
-//   const selectedCourseId = this.quizForm.get('courseId')?.value;
-
-//   // If 'all' is selected or nothing is selected, show every quiz
-//   if (!selectedCourseId || selectedCourseId === 'all') {
-//     return this.quizList;
-//   }
-
-  
-//   return this.quizList().filter(q => q.courseId == selectedCourseId);
-// }
-
-  
-  getCourseName(id: string) {
-    return this.instructorCourses().find(c => c.id == id)?.title || 'Course';
-  }
-
   addQuestion() {
     const qGroup = this.fb.group({
       questionText: ['', Validators.required],
