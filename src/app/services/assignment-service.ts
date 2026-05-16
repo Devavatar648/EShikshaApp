@@ -13,6 +13,8 @@ export class AssignmentService {
   httpClient = inject(HttpClient);
   apiServices = inject(ApiServices);
 
+  selectedAssignment$ = new BehaviorSubject<Assignments | null>(null);
+
   instructorCourses$ = new BehaviorSubject<Course[]>([]);
 
 
@@ -56,42 +58,13 @@ export class AssignmentService {
     );
   }
 
-
-  //    downloadAssignment(courseId: string, fileId: string) {
-  //    const url = this.apiServices.getFullUrl(`instructor/course/${courseId}/assignment/download/${fileId}`);
-
-  //   // 1. Fetch the file as a Blob using Angular's HttpClient
-  //   this.httpClient.get(url, { responseType: 'blob' }).subscribe({
-  //     next: (blob: Blob) => {
-  //       // 2. Create a temporary local URL for the downloaded blob
-  //       const downloadUrl = window.URL.createObjectURL(blob);
-
-  //       // 3. Create an invisible anchor tag to trigger the download automatically
-  //       const link = document.createElement('a');
-  //       link.href = downloadUrl;
-
-  //       // Optional: Give the file a default name if you know the extension (e.g., assignment.pdf)
-  //       link.download = fileId || 'assignment.pdf'; 
-
-  //       // 4. Trigger the download and clean up
-  //       document.body.appendChild(link);
-  //       link.click();
-  //       document.body.removeChild(link);
-  //       window.URL.revokeObjectURL(downloadUrl);
-  //     },
-  //     error: (err) => {
-  //       console.error('Download failed', err);
-  //       // You can inject your ToastrService here to alert the user if needed
-  //     }
-  //   });
-  // }
-
-  downloadAssignment(courseId: string, fileId: string): Observable<Blob> {
-  const url = this.apiServices.getFullUrl(`instructor/course/${courseId}/assignment/download/${fileId}`);
-  
-  // Just return the cold observable stream directly to the component
-  return this.httpClient.get(url, { responseType: 'blob' });
-}
+  //working
+  downloadAssignment(courseId: string, fileId: string | undefined): Observable<Blob> {
+    //`student/course/${courseId}/assignment/download/${fileId}`
+    //instructor/course/${courseId}/assignment/download/${fileId}
+    const url = this.apiServices.getFullUrl(`student/course/${courseId}/assignment/download/${fileId}`);
+    return this.httpClient.get(url, { responseType: 'blob' });
+  }
 
   // downloadAssignment(courseId: string, fileId: string) {
   //   // Grab the token from wherever you store it (e.g., localStorage)
@@ -105,8 +78,8 @@ export class AssignmentService {
   //   window.open(url, '_blank');
   // }
 
-  // downloadAssignment(courseId: string, fileId: string) {
-  //   const url = this.apiServices.getFullUrl(`instructor/course/${courseId}/assignment/download/${fileId}`);
+  // downloadAssignment(courseId: string, fileId: string|undefined) {
+  //   const url = this.apiServices.getFullUrl(`student/course/${courseId}/assignment/download/${fileId}`);
   //   window.open(url, '_blank');
   // }
 

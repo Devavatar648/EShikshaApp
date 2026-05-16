@@ -5,16 +5,7 @@ import { CourseService } from '../../services/course-service';
 import { map } from 'rxjs';
 import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
-
-
-interface Assignment {
-  _id?: string;
-  title: string;
-  dueDate: Date;
-  totalMarks: number;
-  courseId: number;
-  file: string
-}
+import { Assignments } from '../../models/assignments';
 
 @Component({
   selector: 'app-manage-assignemts',
@@ -23,30 +14,30 @@ interface Assignment {
   styleUrl: './manage-assignemts.css',
 })
 export class ManageAssignemts {
+
   private fb = inject(FormBuilder);
   private courseService = inject(CourseService);
   private assignmentService = inject(AssignmentService);
   private toastService = inject(ToastrService);
 
   assignmentForm!: FormGroup;
-  publishedAssignments = signal<Assignment[]>([]);
+  publishedAssignments = signal<Assignments[]>([]);
+  //My API DATA
+  instructorCourses = signal<{ id: string, title: string, category: string }[]>([]);
+
 
   isEditMode = false;
   currentEditAssignmentId: string | null = null;
   selectedFile: File | null = null;
 
-  //API DATA
-  instructorCourses = signal<{ id: string, title: string, category: string }[]>([]);
-
-  //Getting instructor courses ==========================================================
-  ngOnInit() {
+  constructor(){
     this.courseService.instructorCourses$
       .pipe(
-        map((carray) => {
-          if (!carray) {
+        map((courseArray) => {
+          if (!courseArray) {
             return [];
           }
-          return carray.map(c => ({ id: c._id ?? "", title: c.title, category: c.category }))
+          return courseArray.map(c => ({ id: c._id ?? "", title: c.title, category: c.category }))
         }
         )
       )
@@ -55,25 +46,38 @@ export class ManageAssignemts {
           this.instructorCourses.set(courses)
         }
       })
+  }
 
-    //======================================================================================
+  //Getting instructor courses ==========================================================
+  ngOnInit() {
 
-    this.assignmentForm = this.fb.group({
+      this.assignmentForm = this.fb.group({
       courseId: ['', Validators.required],
       title: ['', [Validators.required, Validators.minLength(5)]],
       dueDate: ['', Validators.required],
       totalMarks: ['', [Validators.required, Validators.min(1)]]
-    });
+
+    })
+
+    //======================================================================================
+
+    
+
+
+    //=======================================================================================
 
     this.assignmentForm.get('courseId')?.valueChanges.subscribe(courseId => {
       if (courseId) {
-        console.log("running");
+       // console.log("running");
         this.assignmentService.searchAssignment(courseId).subscribe({
           next: (res) => {
-            console.log(res.result);
+            //console.log(res.result);
             this.publishedAssignments.set(res.result);
           },
-          error: (err) => this.publishedAssignments.set([]) // Clear if none found
+          error: (err) => {
+            this.publishedAssignments.set([])
+            this.toastService.error(err.error.message || "Internal server error");
+          } 
         });
       }
     });
@@ -103,7 +107,8 @@ export class ManageAssignemts {
 
   //==========================================================================================
 
-  onEdit(assignment: Assignment) {
+  onEdit(assignment: Assignments) {
+
     window.scrollTo({
       top: 10,       // vertical position in pixels
       behavior: 'smooth' // smooth animation
@@ -117,12 +122,12 @@ export class ManageAssignemts {
     this.assignmentForm.patchValue({
       title: assignment.title,
       dueDate: formattedDate,
-      totalMarks: assignment.totalMarks
-
+      totalMarks: assignment.totalMarks,
+      file:assignment.file
     });
   }
 
-  //================================================================================
+  //=============================================================================================
 
   onPublish() {
     if (this.assignmentForm.invalid) return;
@@ -137,14 +142,14 @@ export class ManageAssignemts {
       formData.append('myFile', this.selectedFile);
     }
 
+
     if (this.isEditMode && this.currentEditAssignmentId) {
-      // Call Update API
       this.assignmentService.updateAssignments(formData, courseId, this.currentEditAssignmentId).subscribe({
         next: (res) => {
           this.toastService.success("Updated successfully");
           this.resetForm();
           // Refresh the list
-          this.assignmentForm.get('courseId')?.setValue(courseId);
+          //this.assignmentForm.get('courseId')?.setValue(courseId);
         }
       });
 
@@ -161,23 +166,14 @@ export class ManageAssignemts {
           this.selectedFile = null;
         }
       });
+
+      this.assignmentForm.reset();
     }
   }
 
 
-  // Deletes an assignment from the local state 
-  // onDelete(id: number | undefined) {
-  //   if (id && confirm('Are you sure you want to delete this assessment?')) {
-  //     this.publishedAssignments = this.publishedAssignments.filter(a => a.id !== id);
-
-  //     if (this.currentEditId === id) {
-  //       this.resetForm();
-  //     }
-  //   }
-  // }
-
   onDelete(id: string | undefined) {
-    console.log(id);
+    //console.log(id);
     const courseId = this.assignmentForm.get('courseId')?.value;
     if (id && courseId && confirm('Permanently delete this assessment?')) {
       this.assignmentService.deleteAssignment(id, courseId).subscribe({
@@ -205,62 +201,42 @@ export class ManageAssignemts {
   }
 
 
-  // onDownload(assignment: any) {
-  //   const courseId = this.assignmentForm.get('courseId')?.value;
-  //   if (assignment.file && courseId) {
-  //     this.assignmentService.downloadAssignment(courseId, assignment.file);
-  //   }
-  // }
 
-  
   onDownload(assignment: any) {
-    const courseId = this.assignmentForm.get('courseId')?.value;
-    if (!assignment.file || !courseId) return;
+    // const courseId = this.assignmentForm.get('courseId')?.value;
+    // if (!assignment.file || !courseId) return;
 
-    this.assignmentService.downloadAssignment(courseId, assignment.file).subscribe({
-      next: (blob: Blob) => {
-        // 1. Create a temporary local URL for the downloaded blob
-        const downloadUrl = window.URL.createObjectURL(blob);
+    // this.assignmentService.downloadAssignment(courseId, assignment.file).subscribe({
+    //   next: (blob: Blob) => {
 
-        // 2. Create an invisible anchor tag to trigger the download automatically
-        const link = document.createElement('a');
-        link.href = downloadUrl;
-        link.download = assignment.file || 'assignment.pdf';
+    //     const downloadUrl = window.URL.createObjectURL(blob);
 
-        // 3. Trigger the download execution and clean up memory
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        window.URL.revokeObjectURL(downloadUrl);
-      },
-      error: (err) => {
-        console.error('Download failed', err);
-        this.toastService.error("Failed to download file.");
-      }
-    });
+
+    //     const link = document.createElement('a');
+    //     link.href = downloadUrl;
+    //     link.download = assignment.file || 'assignment.pdf';
+
+
+    //     document.body.appendChild(link);
+    //     link.click();
+
+    //     document.body.removeChild(link);
+    //     window.URL.revokeObjectURL(downloadUrl);
+    //   },
+    //   error: (err) => {
+    //     console.error('Download failed', err);
+    //     this.toastService.error("Failed to download file.");
+    //   }
+    // });
   }
 
-  getCurrentDate(): string {
 
+  getCurrentDate(): string {
     const today = new Date();
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = (today.getDate() + 3).toString().padStart(2, '0');
     return `${year}-${month}-${day}`;
-
   }
-
-
-  // getAssignments(event:any){
-  //   this.assignmentService.searchAssignment(event.target.value).subscribe({
-  //     next:res=>{
-  //       this.publishedAssignments.set(res.result);
-  //       this.toastService.success(res.message);
-  //     },
-  //     error:err=>{
-  //       this.toastService.error(err.error.message||"Internal server error");
-  //     }
-  //   })
-  // }
 
 }

@@ -97,6 +97,7 @@
           <!-- Assignments -->
           <h5 class="text-uppercase small fw-bold text-muted mb-3">Hands-on Projects</h5>
           <div class="vstack gap-3">
+            <h3 class="text-uppercase small fw-bold text-muted mb-3">Assignments</h3>
             @for (task of data.assignments; track task.title) {
               <div class="p-3 bg-white border rounded-3 d-flex align-items-center shadow-sm hover-shadow transition-all">
                 <div class="icon-box bg-info bg-opacity-10 text-info rounded-3 p-2 me-3">
@@ -107,7 +108,8 @@
                   <small class="text-muted">Due: {{ task.dueDate | date:'mediumDate' }} • {{ task.totalMarks }} Marks</small>
                 </div>
                 @if(hasAccess()){
-                  <i class="bi bi-download text-primary"></i>
+                  <!-- <i class="bi bi-download text-primary"></i> -->
+                   <button class="btn btn-primary" (click)="goToSubmitAssignment(task)">Submit Assignment</button>
                 }@else{
                   <i class="bi bi-lock-fill text-danger"></i>
                 }

@@ -14,6 +14,7 @@ export class CourseService {
   apiServices = inject(ApiServices);
 
   instructorCourses$ = new BehaviorSubject<Course[]|null>(null);
+  
   catalogCourses$ = new BehaviorSubject<Course[]>([]);
 
   getAllCourses(title?:string,instructor?:string):Observable<{result:Course[],message:string}>{

@@ -11,5 +11,6 @@ export class ApiServices {
   getFullUrl(endpoint:string):string{
     return `${this.BASE_URL}/${endpoint}`;
   }
+  
 
 }
