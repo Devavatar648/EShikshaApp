@@ -11,7 +11,14 @@ export const adminAuthGuard: CanMatchFn = (route, segments) => {
 
   if(token){
     const data = tokenService.decodeToken(token);
-    userService.activeUser$.next(data);
+    userService.getUserSettings().subscribe({
+      next:res=>{
+        userService.activeUser$.next({...res.result,_id:data._id})
+      },
+      error:_=>{
+        return router.navigateByUrl("");
+      }
+    })
     if(data && data.role==="ADMIN"){
       return true;
     }
