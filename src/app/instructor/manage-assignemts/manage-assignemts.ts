@@ -6,18 +6,7 @@ import { map } from 'rxjs';
 import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
 import { Assignments } from '../../models/assignments';
- 
- 
-// interface Assignment {
-//   _id?: string;
-//   title: string;
-//   dueDate: Date;
-//   totalMarks: number;
-//   courseId: number;
-//   file: string
-// }
- 
- 
+
 @Component({
   selector: 'app-manage-assignemts',
   imports: [ReactiveFormsModule, CommonModule],
@@ -25,6 +14,7 @@ import { Assignments } from '../../models/assignments';
   styleUrl: './manage-assignemts.css',
 })
 export class ManageAssignemts {
+
   private fb = inject(FormBuilder);
   private courseService = inject(CourseService);
   private assignmentService = inject(AssignmentService);
@@ -44,11 +34,11 @@ export class ManageAssignemts {
   ngOnInit() {
     this.courseService.instructorCourses$
       .pipe(
-        map((carray) => {
-          if (!carray) {
+        map((courseArray) => {
+          if (!courseArray) {
             return [];
           }
-          return carray.map(c => ({ id: c._id ?? "", title: c.title, category: c.category }))
+          return courseArray.map(c => ({ id: c._id ?? "", title: c.title, category: c.category }))
         }
         )
       )
@@ -69,13 +59,16 @@ export class ManageAssignemts {
  
     this.assignmentForm.get('courseId')?.valueChanges.subscribe(courseId => {
       if (courseId) {
-        console.log("running");
+       // console.log("running");
         this.assignmentService.searchAssignment(courseId).subscribe({
           next: (res) => {
-            console.log(res.result);
+            //console.log(res.result);
             this.publishedAssignments.set(res.result);
           },
-          error: (err) => this.publishedAssignments.set([]) // Clear if none found
+          error: (err) => {
+            this.publishedAssignments.set([])
+            this.toastService.error(err.error.message || "Internal server error");
+          } 
         });
       }
     });
@@ -140,13 +133,12 @@ export class ManageAssignemts {
     }
  
     if (this.isEditMode && this.currentEditAssignmentId) {
-      // Call Update API
       this.assignmentService.updateAssignments(formData, courseId, this.currentEditAssignmentId).subscribe({
         next: (res) => {
           this.toastService.success("Updated successfully");
           this.resetForm();
           // Refresh the list
-          this.assignmentForm.get('courseId')?.setValue(courseId);
+          //this.assignmentForm.get('courseId')?.setValue(courseId);
         }
       });
  
@@ -163,6 +155,8 @@ export class ManageAssignemts {
           this.selectedFile = null;
         }
       });
+
+      this.assignmentForm.reset();
     }
   }
  
@@ -179,7 +173,7 @@ export class ManageAssignemts {
   // }
  
   onDelete(id: string | undefined) {
-    console.log(id);
+    //console.log(id);
     const courseId = this.assignmentForm.get('courseId')?.value;
     if (id && courseId && confirm('Permanently delete this assessment?')) {
       this.assignmentService.deleteAssignment(id, courseId).subscribe({
