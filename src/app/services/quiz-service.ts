@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { ApiServices } from './api-services';
 import { Observable } from 'rxjs';
 import { Quiz } from '../models/quiz';
+import { QuizResponse } from '../models/quizResponse';
 
 @Injectable({
   providedIn: 'root',
@@ -29,5 +30,9 @@ export class QuizService {
 
   updateQuiz(courseId:string, quizId:string, updatedData:any):Observable<{result:Quiz, message:string}>{
     return this.httpClient.patch<{result:Quiz, message:string}>(this.apiServices.getFullUrl(`instructor/course/${courseId}/quiz/${quizId}`), updatedData);
+  }
+
+  submitQuizResponse(courseId:string, quizId:string, quizData:QuizResponse):Observable<{result:QuizResponse, message:string}>{
+    return this.httpClient.post<{result:QuizResponse, message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/quiz/${quizId}`), quizData);
   }
 }

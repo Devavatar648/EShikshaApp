@@ -2,15 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { QuizService } from '../../services/quiz-service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Quiz } from '../../models/quiz';
+import { QuizResponse } from '../../models/quizResponse';
+import { ToastrService } from 'ngx-toastr';
 
-export interface Question {
-  id: number;
-  question: string;
-  options: string[];
-  correctAnswer: number; // Index of the correct option (0-3)
-}
+
 @Component({
   selector: 'app-student-quizes',
   imports: [FormsModule,CommonModule],
@@ -20,17 +17,24 @@ export interface Question {
 export class StudentQuizes {
   private quizService = inject(QuizService);
   private activatedRouter = inject(ActivatedRoute);
+  private toastService = inject(ToastrService);
+  private router = inject(Router);
 
   quizData = signal<Quiz|null>(null);
   isQuizStarted = signal<boolean>(false);
   isQuizSubmitted = signal<boolean>(false);
   totalTime = signal<number>(0);
-  studentAnswers:string[] = [''];
+  studentAnswers:{question:string,answer:string}[] = [];
   seconds = signal<number>(0);
+  result = signal<QuizResponse|null>(null);
+  timerId = 0;
+  courseId = "";
+  quizId = "";
 
   ngOnInit(){
-    const {courseId, id } = this.activatedRouter.snapshot.params;
-    this.quizService.getQuizById(courseId, id).subscribe({
+    this.courseId = this.activatedRouter.snapshot.params['courseId'];
+    this.quizId = this.activatedRouter.snapshot.params['id'];
+    this.quizService.getQuizById(this.courseId, this.quizId).subscribe({
       next:res=>{
         this.quizData.set(res.result);
         this.totalTime.set(res.result.timeLimit);
@@ -43,7 +47,7 @@ export class StudentQuizes {
 
   startQuiz() {
     this.isQuizStarted.set(true);
-    this.startTimer();
+    this.timerId = this.startTimer();
   }
 
   startTimer(){
@@ -55,13 +59,19 @@ export class StudentQuizes {
         this.seconds.update(s=>--s);
       }
       if(this.totalTime()===0 && this.seconds()===0){
-        clearInterval(timerId);
+        this.stopTimer(timerId);
+        this.submitQuiz();
       }
     },1000);
+    return timerId;
   }
 
-  retakeQuiz() {
-    this.isQuizStarted.set(false);
+  goToHome() {
+    this.router.navigateByUrl("/dashboard");
+  }
+
+  stopTimer = (timerId:number)=>{
+    clearInterval(timerId);
   }
 
 
@@ -73,14 +83,27 @@ export class StudentQuizes {
   }
 
   submitQuiz() {
-    console.log(this.studentAnswers);
-    // this.finalScore = 0;
-    // this.questions.forEach((q, index) => {
-    //   if (this.studentAnswers[index] === q.correctAnswer) {
-    //     this.finalScore++;
-    //   }
-    // });
-    // this.quizSubmitted = true;
+    this.stopTimer(this.timerId);
+    const time = ((this.quizData()?.timeLimit??0)*60)-((this.totalTime()*60)+this.seconds())
+    const timeTaken = `${String(Math.floor(time/(60*60))).padStart(2, '0')}:${String(Math.floor(time/60)).padStart(2, '0')}:${String(time%60).padStart(2,'0')}`
+    const quizData = new QuizResponse(this.quizData()?.instructor?._id??"", this.studentAnswers, timeTaken);
+    this.quizService.submitQuizResponse(this.courseId, this.quizId, quizData).subscribe({
+      next:res=>{
+        this.result.set(res.result);
+        this.toastService.success(res.message);
+        console.log(res.result);
+      },
+      error:err=>{
+        this.toastService.error(err.error.message||"Internal server error");
+      }
+    })
+    this.isQuizSubmitted.set(true);
+  }
+
+  getMarksPercentage(){
+    const marks = this.result()?.obtainMarks??0;
+    const total = this.quizData()?.totalMarks??1;
+    return ((marks/ total) * 100);
   }
 
 }

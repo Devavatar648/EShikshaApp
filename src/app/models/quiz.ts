@@ -14,6 +14,7 @@ export class Quiz{
             title:string
         },
         public instructor?:{
+            _id:string,
             name:string,
         }
     ){}

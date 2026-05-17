@@ -104,17 +104,17 @@
     </button>
   </div>
   }@else{
-  <!-- <div *ngIf="isQuizStarted && quizSubmitted" class="text-center p-5 bg-white shadow rounded border-0">
+  <div class="text-center p-5 bg-white shadow rounded border-0">
     <h1 class="display-4 fw-bold text-success">Quiz Complete!</h1>
-    <p class="fs-4">You scored <strong>{{ finalScore }}</strong> out of {{ quizData()?.questions?.length }}</p>
+    <p class="fs-4">You scored <strong>{{ result()?.obtainMarks }}</strong> out of {{ quizData()?.totalMarks}}</p>
     <div class="progress mb-4" style="height: 30px; border-radius: 15px;">
-      <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar"
-        [style.width.%]="(finalScore / questions.length) * 100">
-        {{ (finalScore / quizData()?.questions?.length??1) * 100 }}%
-      </div>
+        <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar"
+          [style.width.%]="getMarksPercentage()">
+          {{ getMarksPercentage() }}%
+        </div>
     </div>
-    <button class="btn btn-outline-success fw-bold" (click)="retakeQuiz()">Retake Quiz</button>
-  </div> -->
+    <button class="btn btn-outline-success fw-bold" (click)="goToHome()">Go to Home</button>
+  </div>
   }
 </div>
 }
