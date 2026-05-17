@@ -4,6 +4,7 @@ import { ApiServices } from './api-services';
 import { Course } from '../models/course';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Assignments } from '../models/assignments';
+import { EnrolledCourse } from '../models/enrolledCourse';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class CourseService {
   apiServices = inject(ApiServices);
 
   instructorCourses$ = new BehaviorSubject<Course[]|null>(null);
-  studentCourses$=new BehaviorSubject<Course[]|null>(null);
+  studentCourses$=new BehaviorSubject<EnrolledCourse[]|null>(null);
 
   catalogCourses$ = new BehaviorSubject<Course[]>([]);
 
@@ -47,20 +48,12 @@ export class CourseService {
 
 //ENROLLMENT============
 
-  enrollCourse(courseId:string):Observable<{result:{course:Course}, message:string}>{
-    return this.httpClient.post<{result:{course:Course}, message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/enroll`),
-     {}, // body (empty object if no payload)
-    { responseType: 'json' } // ensure JSON response
-
-  );
+  enrollCourse(courseId:string):Observable<{result:null, message:string}>{
+    return this.httpClient.post<{result:null, message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/enroll`),{});
   }
 
-  getEnrolledCourse(studentId?:string):Observable<{result:Course[],message:string}>{
-    let params = new HttpParams();
-    if(studentId){
-      params=params.set("student",studentId);
-    }
-    return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(`student/course/${studentId}/enroll`));
+  getEnrolledCourse(studentId?:string):Observable<{result:EnrolledCourse[],message:string}>{
+    return this.httpClient.get<{result:EnrolledCourse[],message:string}>(this.apiServices.getFullUrl(`student/course`));
   }
 
   //unEnrollCourse()
@@ -68,4 +61,17 @@ export class CourseService {
     return `course/${endpoint}`;
   }
 
+
+
+  isEnrolledCourse(courseId:string):boolean{
+    console.log(courseId);
+    // use firstValueFrom 
+    this.studentCourses$.subscribe(res=>{
+      if(res){
+        return res.findIndex(c=>c.course._id===courseId)>-1?true:false;
+      }
+      return false;
+    })
+    return false;
+  }
 }

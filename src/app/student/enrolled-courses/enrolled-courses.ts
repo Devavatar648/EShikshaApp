@@ -6,38 +6,62 @@ import { Course } from '../../models/course';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user-service';
 import { ToastrService } from 'ngx-toastr';
+import { EnrolledCourse } from '../../models/enrolledCourse';
 
 @Component({
   selector: 'app-enrolled-courses',
-  imports: [RouterModule,CommonModule],
+  imports: [RouterModule, CommonModule],
   templateUrl: './enrolled-courses.html',
   styleUrl: './enrolled-courses.css',
 })
 export class EnrolledCourses {
-    userService=inject(UserService);
-    courseService=inject(CourseService);
-    courseList = signal<Course[]>([]);
-    toastService=inject(ToastrService);
+  userService = inject(UserService);
+  courseService = inject(CourseService);
+  toastService = inject(ToastrService);
+
+  courseList = signal<EnrolledCourse[]>([]);
+  totalCourses = 0;
+  activeTab:string = 'all';
 
   ngOnInit(): void {
-        this.courseService.instructorCourses$.subscribe(res=>{
-      if(!res){
-        this.userService.activeUser$.subscribe(user=>{
-          this.courseService.getEnrolledCourse(user?._id).subscribe({
-            next:courseResult=>{
-              this.courseService.instructorCourses$.next(courseResult.result);
-              this.courseList.set(courseResult.result)
-              console.log(this.courseList());
-            },
-            error:err=>{
-              this.toastService.error(err.error.message??"Internal Server Error");
-            }
-          })
+    this.courseService.studentCourses$.subscribe(res => {
+      if (!res) {
+        this.courseService.getEnrolledCourse().subscribe({
+          next: courseResult => {
+            this.courseService.studentCourses$.next(courseResult.result);
+            this.totalCourses=courseResult.result.length;
+            this.courseList.set(courseResult.result)
+          },
+          error: err => {
+            this.toastService.error(err.error.message ?? "Internal Server Error");
+          }
         })
-      }else{
+      } else {
         this.courseList.set(res);
       }
-    })  
-}
+    })
+  }
+
+
+  getNameAvterUrl(name:string){
+    const nameArr = name.split(" ");
+    return `https://ui-avatars.com/api/?name=${nameArr[0]}+${nameArr[1]}&background=random`
+  }
+
+  getFilturedCourse(filterName:"all"|"inprogress"|"complete"){
+    this.courseService.studentCourses$.subscribe(res=>{
+        if(res){
+          if(filterName==='complete'){
+            res = res.filter(c=>c.completePercentage===100);
+          }else if(filterName==='inprogress'){
+            res = res.filter(c=>c.completePercentage<100)
+          }
+          this.courseList.set(res)
+        }else{
+          this.courseList.set([]);
+        }
+      })
+    this.activeTab=filterName;
+  }
 }
 

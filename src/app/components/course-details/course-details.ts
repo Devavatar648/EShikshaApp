@@ -42,16 +42,12 @@ export class CourseDetails {
   // selectedCourse = signal(this.MOCK_SELECTED_COURSE);
   enroll() {
     this.courseService.enrollCourse(this.courseId1).subscribe({
-      next:res=>{
-        console.log(res);
-        this.isEnrolled=true;
-        const courses=this.enrolledCourseList ();
-        // courses.push(res.result.course);
-        this.enrolledCourseList.set(courses);
+      next:_=>{
+        this.isEnrolled = true;
         this.toastService.success(`Successfully enrolled in ${this.selectedCourse()?.course?.title}!`);
       },
       error:err=>{
-              this.toastService.error(err.error.message??"Internal Server Error");
+        this.toastService.error(err.error.message??"Internal Server Error");
       }
     })
   }
@@ -59,11 +55,13 @@ export class CourseDetails {
   unrenroll(){
     
   }
+
+
   goToSubmitAssignment(assignment:Assignments) {
     this.assignmentService.selectedAssignment$.next(assignment);
 
     this.router.navigate(
-      ['/dashboard/coursecatalog/coursedetails', this.courseId1, 'assignment', assignment._id]
+      ['/dashboard/enrolledcourses/coursedetails', this.courseId1, 'assignment', assignment._id]
     );
 
 
