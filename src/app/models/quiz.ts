@@ -4,10 +4,17 @@ export class Quiz{
         public timeLimit:number,
         public totalMarks:number,
         public questions:{
+            _id?:string,
             questionText:string,
             options:[string],
             answer?:string
         }[],
-        public _id?:string
+        public _id?:string,
+        public course?:{
+            title:string
+        },
+        public instructor?:{
+            name:string,
+        }
     ){}
 }

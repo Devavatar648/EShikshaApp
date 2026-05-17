@@ -27,7 +27,7 @@ export class Quizes {
   fb=inject(FormBuilder)
 
   // API DATA - Mocked for consistency
-  instructorCourses = signal<{ id: string, title: string }[]>([]);
+  instructorCourses = signal<{ id: string, title: string, category:string }[]>([]);
 
   ngOnInit(): void {
     this.courseService.instructorCourses$
@@ -36,7 +36,7 @@ export class Quizes {
           if (!carray) {
             return [];
           }
-          return carray.map(c => ({ id: c._id??"", title: c.title }))
+          return carray.map(c => ({ id: c._id??"", title: c.title, category:c.category }))
         }
         )
       )

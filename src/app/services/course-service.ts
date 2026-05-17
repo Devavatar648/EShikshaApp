@@ -29,8 +29,8 @@ export class CourseService {
     return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint('')), {params});
   }
 
-  getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[]}, message:string}>{
-    return this.httpClient.get<{result:{course:Course,assignments:Assignments[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
+  getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[], quizzes:any[]}, message:string}>{
+    return this.httpClient.get<{result:{course:Course,assignments:Assignments[], quizzes:any[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
   }
 
   createCourse(course:Course):Observable<{result:Course, message:string}>{

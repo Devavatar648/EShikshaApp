@@ -1,6 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { QuizService } from '../../services/quiz-service';
+import { ActivatedRoute } from '@angular/router';
+import { Quiz } from '../../models/quiz';
 
 export interface Question {
   id: number;
@@ -15,101 +18,69 @@ export interface Question {
   styleUrl: './student-quizes.css',
 })
 export class StudentQuizes {
-  isQuizStarted: boolean = false;
-  msg!:string;
+  private quizService = inject(QuizService);
+  private activatedRouter = inject(ActivatedRoute);
 
+  quizData = signal<Quiz|null>(null);
+  isQuizStarted = signal<boolean>(false);
+  isQuizSubmitted = signal<boolean>(false);
+  totalTime = signal<number>(0);
+  studentAnswers:string[] = [''];
+  seconds = signal<number>(0);
 
-  questions: Question[] = [
-    {
-      id: 1,
-      question: "Which directive is used for two-way data binding in Angular?",
-      options: ["*ngIf", "ngModel", "*ngFor", "ngStyle"],
-      correctAnswer: 1
-    },
-    {
-      id: 2,
-      question: "What is the default port for an Angular development server?",
-      options: ["3000", "8080", "4200", "5000"],
-      correctAnswer: 2
-    },
-    {
-      id: 3,
-      question: "Why you exist?",
-      options: ["don't know", "doesn't matter", "actually matters", "for the 7 crore"],
-      correctAnswer: 3
-
-    },
-    {
-      id: 4,
-      question: "Who is not blood related to goku?",
-      options: ["Goten", "Vegeta", "Trunks", "Gohan"],
-      correctAnswer: 1
-
-    }
-  ];
-
-  studentAnswers: any = {};
-  finalScore: number = 0;
-  quizSubmitted: boolean = false;
-
-  InitialValue = signal(0);
-  BoundedTime = 0.5;
-  minuteValue = signal(0);
-  hourValue = signal(0);
-  secondValue = signal(0);
+  ngOnInit(){
+    const {courseId, id } = this.activatedRouter.snapshot.params;
+    this.quizService.getQuizById(courseId, id).subscribe({
+      next:res=>{
+        this.quizData.set(res.result);
+        this.totalTime.set(res.result.timeLimit);
+      },
+      error:err=>{
+        console.log(err);
+      }
+    })
+  }
 
   startQuiz() {
-    this.isQuizStarted = true;
-    this.quizSubmitted = false;
+    this.isQuizStarted.set(true);
+    this.startTimer();
+  }
 
-    const intervalId = setInterval(() => {
-      this.InitialValue.set(this.InitialValue() + 1);
-      this.secondValue.set(this.secondValue() + 1);
-      if (this.InitialValue() === this.BoundedTime * 60) {
-        clearInterval(intervalId);
-        this.submitQuiz();
+  startTimer(){
+    const timerId = setInterval(()=>{
+      if(this.seconds()==0){
+        this.totalTime.update(t=>--t);
+        this.seconds.set(59);
+      }else{
+        this.seconds.update(s=>--s);
       }
-      if (this.secondValue() >= 60) {
-        this.minuteValue.set(this.minuteValue() + 1);
-        this.secondValue.set(0);
+      if(this.totalTime()===0 && this.seconds()===0){
+        clearInterval(timerId);
       }
-      if (this.minuteValue() >= 60) {
-        this.hourValue.set(this.hourValue() + 1);
-      }
-      if (this.InitialValue() === this.BoundedTime*60*0.9) {
-        alert("you are running out of time");
-        this.msg="You are out of time";
-      }
-    }, 1000);
-
+    },1000);
   }
 
   retakeQuiz() {
-    this.isQuizStarted = false;
-    this.quizSubmitted = false;
-    this.studentAnswers = {};
-    this.finalScore = 0;
-    this.InitialValue.set(0);
-    this.secondValue.set(0);
-    this.minuteValue.set(0);
-    this.hourValue.set(0);
+    this.isQuizStarted.set(false);
   }
 
+
+
   getTimer(){
-    const hour =this.hourValue().toString().padStart(2,"0");
-    const minute=this.minuteValue().toString().padStart(2,"0");
-    const seconds=this.secondValue().toString().padStart(2,"0");
-    return `${hour}:${minute}:${seconds}`;
+    let hour = Math.floor(this.totalTime()/60);
+    let minute = Math.floor(this.totalTime()%60);
+    return `${String(hour).padStart(2,'0')}:${String(minute).padStart(2,'0')}:${String(this.seconds()).padStart(2,'0')}`;
   }
 
   submitQuiz() {
-    this.finalScore = 0;
-    this.questions.forEach((q, index) => {
-      if (this.studentAnswers[index] === q.correctAnswer) {
-        this.finalScore++;
-      }
-    });
-    this.quizSubmitted = true;
+    console.log(this.studentAnswers);
+    // this.finalScore = 0;
+    // this.questions.forEach((q, index) => {
+    //   if (this.studentAnswers[index] === q.correctAnswer) {
+    //     this.finalScore++;
+    //   }
+    // });
+    // this.quizSubmitted = true;
   }
 
 }

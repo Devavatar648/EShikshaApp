@@ -15,6 +15,10 @@ export class QuizService {
     return this.httpClient.get<{result:any, message:string}>(this.apiServices.getFullUrl(`instructor/course/${courseId}/quiz`));
   }
 
+  getQuizById(courseId:string, quizId:string):Observable<{result:Quiz, message:string}>{
+    return this.httpClient.get<{result:Quiz, message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/quiz/${quizId}`))
+  }
+
   addQuiz(courseId:string, quizData:Quiz):Observable<{result:any, message:string}>{
     return this.httpClient.post<{result:any, message:string}>(this.apiServices.getFullUrl(`instructor/course/${courseId}/quiz`), quizData);
   }
