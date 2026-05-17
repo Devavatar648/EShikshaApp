@@ -6,6 +6,7 @@ import { map } from 'rxjs';
 import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
 import { Assignments } from '../../models/assignments';
+import { AssignmentsResult } from '../../models/assignmentResult';
 
 @Component({
   selector: 'app-manage-assignemts',
@@ -26,6 +27,15 @@ export class ManageAssignemts {
   isEditMode = false;
   currentEditAssignmentId: string | null = null;
   selectedFile: File | null = null;
+
+  studentName!:string;
+  studentId!:string;
+
+  AssignmentResponses=signal<AssignmentsResult[]>([]);
+
+  StudentResponse=signal<AssignmentsResult[]>([]);
+
+  viewResponses=false;
  
   //API DATA
   instructorCourses = signal<{ id: string, title: string, category: string }[]>([]);
@@ -47,6 +57,8 @@ export class ManageAssignemts {
           this.instructorCourses.set(courses)
         }
       })
+
+      // this.assignmentService.searchResult(this.instructorCourses()[0].id,this.publishedAssignments()[0]._id)
  
     //======================================================================================
  
@@ -213,7 +225,7 @@ export class ManageAssignemts {
     const courseId = this.assignmentForm.get('courseId')?.value;
     if (!assignment.file || !courseId) return;
  
-    this.assignmentService.downloadAssignment(courseId, assignment.file).subscribe({
+    this.assignmentService.downloadAssignmentInstructor(courseId, assignment.file).subscribe({
       next: (blob: Blob) => {
    
         const downloadUrl = window.URL.createObjectURL(blob);
@@ -221,7 +233,7 @@ export class ManageAssignemts {
        
         const link = document.createElement('a');
         link.href = downloadUrl;
-        link.download = assignment.file || 'assignment.pdf';
+        link.download = `${assignment.title}_assignment.pdf`;
  
        
         document.body.appendChild(link);
@@ -246,18 +258,75 @@ export class ManageAssignemts {
     return `${year}-${month}-${day}`;
  
   }
+
+
+  onSetMarks(result:AssignmentsResult,givenMarks:number){
+    console.log(result);
+     this.assignmentService.giveMarks(result._id,this.assignmentForm.get('courseId')?.value, givenMarks).subscribe({
+      next:(res)=>{
+        this.toastService.success("Marks set");
+      },
+      error:(err)=>{
+        console.log(err);
+        this.toastService.error("Problem while setting marks");
+      }
+     })
+
+     this.AssignmentResponses.update(as=>as.filter(a=>a._id!==result._id));
+  }
+
+  downloadStudentDocument(result:AssignmentsResult){
+    const courseId = this.assignmentForm.get('courseId')?.value;
+    if (!result.file || !courseId) return;
  
+    this.assignmentService.downloadAssignmentInstructor(courseId, result.file).subscribe({
+      next: (blob: Blob) => {
+   
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${result.student.name}_assignment.pdf`;
  
-  // getAssignments(event:any){
-  //   this.assignmentService.searchAssignment(event.target.value).subscribe({
-  //     next:res=>{
-  //       this.publishedAssignments.set(res.result);
-  //       this.toastService.success(res.message);
-  //     },
-  //     error:err=>{
-  //       this.toastService.error(err.error.message||"Internal server error");
-  //     }
-  //   })
-  // }
+       
+        document.body.appendChild(link);
+        link.click();
+ 
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      },
+      error: (err) => {
+        console.error('Download failed', err);
+        this.toastService.error("Failed to download file.");
+      }
+    });
+
+
+  }
+
+
+  // onDeleteResponse(resultId:string){}
+
+  AssignmentResponse(assignment:any){
+      this.viewResponses=!this.viewResponses;
+      console.log(assignment);
+      this.assignmentService.searchResult(assignment.course,assignment._id).subscribe(
+        {
+          next:(result)=>{
+               this.AssignmentResponses.set(result.result);
+              //  this.toastService.success("Responses Searched");
+              //  console.log(this.AssignmentResponses());
+
+              //  this.studentName=this.AssignmentResponses().student.name;
+              //  this.studentId=this.AssignmentResponses().student._id;
+          },
+          error:(error)=>{
+            this.toastService.error("No assignment Found");
+
+          }
+        }
+      )
+
+  }
  
 }
