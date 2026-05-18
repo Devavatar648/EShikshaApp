@@ -26,7 +26,6 @@ export class Quizes {
 
   fb=inject(FormBuilder)
 
-  // API DATA - Mocked for consistency
   instructorCourses = signal<{ id: string, title: string, category:string }[]>([]);
 
   ngOnInit(): void {
@@ -71,7 +70,6 @@ export class Quizes {
   addQuestion() {
     const qGroup = this.fb.group({
       questionText: ['', Validators.required],
-      // Create a FormArray containing 4 empty controls
       options: this.fb.array([
         ['', Validators.required],
         ['', Validators.required],

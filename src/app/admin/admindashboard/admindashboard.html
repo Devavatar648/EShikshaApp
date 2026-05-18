@@ -52,21 +52,19 @@
         <div class="col-lg-8">
             <div class="card shadow-sm h-100">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Enrollment Velocity</span>
+                    <span>Joining Velocity</span>
                     <i class="fa-solid fa-ellipsis-vertical text-muted cursor-pointer"></i>
                 </div>
                 <div class="card-body">
                     <div style="height: 300px; background: #f8fafc; border-radius: 15px;" class="d-flex align-items-center justify-content-center border-dashed">
-                        <!-- <div class="text-center text-muted">
-                            <i class="fa-solid fa-chart-line fa-3x mb-3 opacity-25"></i>
-                            <p>Visualizing 12-month growth data...</p>
-                        </div> -->
-                        <canvas
-                        baseChart
-                        [data]="lineChartData"
-                        [options]="lineChartOptions",
-                        [type]="'line'"
-                        ></canvas>
+                        @if(lineChartData()!==null){
+                            <canvas
+                            baseChart
+                            [data]="lineChartData()"
+                            [options]="lineChartOptions",
+                            [type]="'line'"
+                            ></canvas>
+                        }
                     </div>
                 </div>
             </div>
@@ -94,52 +92,6 @@
                         <span class="small">78%</span>
                     </div>
                     <div class="completion-bar"><div class="completion-fill" style="width: 78%"></div></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header border-0 pb-0">
-                    <h5 class="mb-0">Elite Instructors</h5>
-                </div>
-                <div class="table-responsive p-3">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Instructor</th>
-                                <th>Active Courses</th>
-                                <th>Rating</th>
-                                <th class="text-end">Performance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="instructor-avatar me-3">JD</div>
-                                        <span class="fw-bold">John Doe</span>
-                                    </div>
-                                </td>
-                                <td>38</td>
-                                <td><i class="fa-solid fa-star text-warning me-1"></i> 5.0</td>
-                                <td class="text-end"><span class="badge bg-soft-purple">Platinum</span></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="d-flex align-items-center">
-                                        <div class="instructor-avatar me-3" style="background: #10b981;">SJ</div>
-                                        <span class="fw-bold">Sarah J.</span>
-                                    </div>
-                                </td>
-                                <td>27</td>
-                                <td><i class="fa-solid fa-star text-warning me-1"></i> 4.8</td>
-                                <td class="text-end"><span class="badge bg-soft-emerald">Gold</span></td>
-                            </tr>
-                        </tbody>
-                    </table>
                 </div>
             </div>
         </div>
