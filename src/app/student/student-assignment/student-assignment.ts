@@ -1,0 +1,108 @@
+import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
+import { AssignmentService } from '../../services/assignment-service';
+import { Assignments } from '../../models/assignments';
+import { CourseService } from '../../services/course-service';
+
+
+@Component({
+  selector: 'app-student-assignment',
+  imports: [CommonModule],
+  templateUrl: './student-assignment.html',
+  styleUrl: './student-assignment.css',
+})
+export class StudentAssignment {
+
+  activatedRoutes = inject(ActivatedRoute);
+  toastService = inject(ToastrService);
+  assignmentService = inject(AssignmentService);
+  courseService = inject(CourseService);
+
+
+  courseId!: string;
+  selectedFile: File | null = null;
+
+  assignedAssignment = signal<Assignments | null>(null)
+
+  assignmentTitle: string | undefined;
+  dueDate: string | undefined;
+  totalMarks: number | undefined;
+  fileId!: string | undefined;
+  AssignmentId: string | undefined;
+
+  constructor() { }
+
+  ngOnInit() {
+    this.courseId = this.activatedRoutes.snapshot.params['courseId'];
+
+    this.assignmentService.selectedAssignment$.subscribe({
+      next: (res) => {
+        this.assignedAssignment.set(res);
+        console.log(this.assignedAssignment())
+        this.assignmentTitle = this.assignedAssignment()?.title;
+        this.dueDate = String(this.assignedAssignment()?.dueDate).split('T')[0];
+        this.totalMarks = this.assignedAssignment()?.totalMarks;
+        this.fileId = this.assignedAssignment()?.file;
+        this.AssignmentId = this.assignedAssignment()?._id;
+      },
+      error: (err) => {
+        this.assignedAssignment.set(null);
+      }
+    })
+
+
+
+  }
+
+
+
+  downloadInstructorPdf(): void {
+    this.assignmentService.downloadAssignment(this.courseId, this.fileId).subscribe({
+      next: (blob: Blob) => {
+
+        const downloadUrl = window.URL.createObjectURL(blob);
+
+
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        link.download = `${this.assignmentTitle}${Date.now()}.pdf`;
+
+
+        document.body.appendChild(link);
+        link.click();
+
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+      },
+      error: (err) => {
+        console.error('Download failed', err);
+        this.toastService.error("Failed to download file.");
+      }
+
+    })
+
+
+  }
+
+  onFileSelected(event: any): void {
+    console.log(event.target.files);
+    const file = event.target.files[0];
+    if (file && file.type === 'application/pdf') {
+      this.selectedFile = file;
+    } else {
+      alert("Please select a valid PDF file for your submission.");
+    }
+  }
+
+  submitResult(): void {
+    if (this.selectedFile) {
+      console.log('Submitting result PDF:', this.selectedFile.name);
+
+      alert('Assignment submitted successfully!');
+
+      this.selectedFile = null;
+    }
+  }
+}

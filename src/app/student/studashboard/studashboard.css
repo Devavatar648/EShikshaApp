@@ -1,69 +1,30 @@
-/* Custom Grade Card Gradient */
-.grade-card-main {
-    background: linear-gradient(135deg, #63f18b 0%, #022f16e8 100%);
-}
-
-.gpa-circle {
-    width: 80px;
-    height: 80px;
-    background: rgba(255, 255, 255, 0.15);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(5px);
-}
-
-/* Course Icons */
-.course-icon {
-    width: 45px;
-    height: 45px;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.2rem;
-}
-
-/* Beautiful Grade Pills */
-.grade-pill {
-    padding: 8px 16px;
-    border-radius: 10px;
-    font-weight: 700;
-    font-size: 0.9rem;
-}
-
-.bg-purple-subtle { background-color: #f5f3ff; color: #7c3aed; }
-.text-purple { color: #7c3aed; }
-
-/* Status Indicators */
-.status-indicator {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 5px;
-}
-
-.pass { background-color: #10b981; box-shadow: 0 0 8px rgba(16, 185, 129, 0.5); }
-.pending { background-color: #f59e0b; box-shadow: 0 0 8px rgba(245, 158, 11, 0.5); }
-
-/* Table Fine-Tuning */
-.extra-small {
-    font-size: 0.75rem;
-}
-
-.table thead th {
+.smaller {
+    font-size: 0.7rem;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-size: 0.75rem;
-    color: #64748b;
+    letter-spacing: 0.5px;
 }
 
-.table tbody tr {
-    transition: all 0.2s ease;
+.extra-small {
+    font-size: 0.65rem;
 }
 
-.table tbody tr:hover {
-    background-color: #f8fafc;
+.hover-lift {
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.hover-lift:hover {
+    transform: translateY(-2px);
+}
+
+.bg-primary-subtle {
+    background-color: #cfe2ff !important;
+}
+
+.bg-info-subtle {
+    background-color: #cff4fc !important;
+}
+
+.bg-warning-subtle {
+    background-color: #fff3cd !important;
 }

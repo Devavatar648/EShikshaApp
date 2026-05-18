@@ -14,12 +14,16 @@ export class StudentProgress {
   courseNames = signal<{id:string,title:string}[]|null>(null);
 
   ngOnInit(){
-    this.courseService.instructorCourses$.pipe(
-      map(c=>c.map(v=>{
-        return {id:v._id, title:v.title}
-      }))
-    ).subscribe(res=>{
-      if(res)this.courseNames.set(res)
-    });
+    // this.courseService.instructorCourses$.pipe(
+    //   map(c=>{
+    //     if(c){
+    //       return c.map(v=>{
+    //       return {id:v._id, title:v.title}
+    //     }
+    //   })
+    //   })
+    // ).subscribe(res=>{
+    //   if(res)this.courseNames.set(res)
+    // });
   }
 }

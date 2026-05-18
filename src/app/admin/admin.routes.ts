@@ -7,7 +7,7 @@ export const adminRoutes : Routes = [
         {path:"coursecatalog", loadComponent:()=>import("../components/course-catalog/course-catalog").then(r=>r.CourseCatalog)},
         {path:"manageusers", loadComponent:()=>import("./users/users").then(r=>r.Users)},
         {path:"settings", loadComponent:()=>import("../components/settings/settings").then(r=>r.Settings)},
-        {path:"coursedetails/:name", loadComponent:()=>import("../components/course-details/course-details").then(r=>r.CourseDetails)},
+        {path:"coursecatalog/coursedetails/:courseId", loadComponent:()=>import("../components/course-details/course-details").then(r=>r.CourseDetails)},
         {path:"message", loadComponent:()=>import("./message/message").then(r=>r.Message)}
     ]}
 ]

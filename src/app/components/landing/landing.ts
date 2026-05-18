@@ -36,7 +36,8 @@ export class Landing {
       debounceTime(300)
     ).subscribe(res=>{
       this.loadingService.isLoading$.next(true);
-      this.courseServices.searchCourseByTitle(res??'').subscribe(response=>{
+      console.log(res);
+      this.courseServices.getAllCourses(res??'').subscribe(response=>{
         this.courses.set(response.result);
         this.loadingService.isLoading$.next(false);
       })
