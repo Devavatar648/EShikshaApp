@@ -24,27 +24,23 @@ export class Announcements implements OnInit {
     this.checkUserRole(); 
   }
 
-  checkUserRole() {
-    const data = localStorage.getItem('user'); 
+  // announcements.ts
+checkUserRole() {
+  const data = localStorage.getItem('user');
+  if (data) {
+    const parsedData = JSON.parse(data);
     
-    if (data) {
-      const parsedData = JSON.parse(data);
-      
-      
-      const userRole = parsedData.user?.role;
+    
+    const userRole = parsedData.user?.role;
 
-      // This toggles the view: 
-      // If 'INSTRUCTOR', isInstructor becomes true (Show Post Box)
-      // If 'STUDENT', isInstructor stays false (Hide Post Box)
-      this.isInstructor = (userRole === 'INSTRUCTOR');
-      
-      console.log("Logged in role:", userRole);
-      console.log("Access level - Is Instructor:", this.isInstructor);
-    } else {
-      this.isInstructor = false;
-      console.log("No user data found in localStorage.");
-    }
+    console.log("SHAHIN - Extracted Role:", userRole);
+
+    // This matches the 'INSTRUCTOR' string seen in your console
+    this.isInstructor = (userRole === 'INSTRUCTOR');
+    
+    console.log("SHAHIN - Access Granted:", this.isInstructor);
   }
+}
 
   loadAnnouncements() {
     this.http.get<any[]>(this.apiUrl).subscribe({
@@ -59,7 +55,7 @@ export class Announcements implements OnInit {
     const data = localStorage.getItem('user');
     const parsedData = data ? JSON.parse(data) : {};
     
-    // Using the name from the nested user object
+   
     const payload = {
       content: this.newAnnouncementText,
       instructorName: parsedData.user?.name || 'Instructor' 

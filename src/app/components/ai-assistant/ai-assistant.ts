@@ -14,7 +14,7 @@ export class AiAssistantComponent {
   
   // Initial chat data
   chats = [
-    { sender: 'Bot', text: 'Hello Shahin! I am your EduFlow AI. How can I help you with your training today?', time: '10:00 AM' }
+    { sender: 'Bot', text: 'Hello Student! I am your EduFlow AI. How can I help you with your training today?', time: '10:00 AM' }
   ];
 
   sendMessage() {
