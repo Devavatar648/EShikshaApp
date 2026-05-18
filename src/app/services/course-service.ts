@@ -4,6 +4,7 @@ import { ApiServices } from './api-services';
 import { Course } from '../models/course';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Assignments } from '../models/assignments';
+import { EnrolledCourse } from '../models/enrolledCourse';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,8 @@ export class CourseService {
   apiServices = inject(ApiServices);
 
   instructorCourses$ = new BehaviorSubject<Course[]|null>(null);
-  
+  studentCourses$=new BehaviorSubject<EnrolledCourse[]|null>(null);
+
   catalogCourses$ = new BehaviorSubject<Course[]>([]);
 
   getAllCourses(title?:string,instructor?:string):Observable<{result:Course[],message:string}>{
@@ -28,8 +30,8 @@ export class CourseService {
     return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint('')), {params});
   }
 
-  getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[]}, message:string}>{
-    return this.httpClient.get<{result:{course:Course,assignments:Assignments[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
+  getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[], quizzes:any[]}, message:string}>{
+    return this.httpClient.get<{result:{course:Course,assignments:Assignments[], quizzes:any[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
   }
 
   createCourse(course:Course):Observable<{result:Course, message:string}>{
@@ -39,9 +41,37 @@ export class CourseService {
     return this.httpClient.patch<{result:{course:Course}, message:string}>(this.apiServices.getFullUrl(`instructor/course/${courseId}`),updatedData);
   }
   
-  // deleteCourse(courseId:string)<>{}
+  deleteCourse(courseId:string):Observable<{result: { course: Course }; message: string }>{
+    return this.httpClient.delete<{result:{ course: Course }; message: string }>(this.apiServices.getFullUrl(`instructor/course/${courseId}`));
+}
   
+
+//ENROLLMENT============
+
+  enrollCourse(courseId:string):Observable<{result:null, message:string}>{
+    return this.httpClient.post<{result:null, message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/enroll`),{});
+  }
+
+  getEnrolledCourse(studentId?:string):Observable<{result:EnrolledCourse[],message:string}>{
+    return this.httpClient.get<{result:EnrolledCourse[],message:string}>(this.apiServices.getFullUrl(`student/course`));
+  }
+
+  //unEnrollCourse()
   getCourseEndpoint(endpoint:string):string{
     return `course/${endpoint}`;
+  }
+
+
+
+  isEnrolledCourse(courseId:string):boolean{
+    console.log(courseId);
+    // use firstValueFrom 
+    this.studentCourses$.subscribe(res=>{
+      if(res){
+        return res.findIndex(c=>c.course._id===courseId)>-1?true:false;
+      }
+      return false;
+    })
+    return false;
   }
 }
