@@ -15,7 +15,7 @@ export const adminRoutes : Routes = [
         {path:"announcements",loadComponent:()=>import("../components/announcements/announcements").then(r=>r.Announcements)},
         { path: "aiassistant", loadComponent: () => import("../components/ai-assistant/ai-assistant").then(r => r.AiAssistantComponent) },
         {path:"community-forum",loadComponent:()=>import("../components/community-forum/community-forum").then(r=>r.CommunityForumComponent)}
-
-
+        {path:"coursecatalog/coursedetails/:courseId", loadComponent:()=>import("../components/course-details/course-details").then(r=>r.CourseDetails)},
+        {path:"message", loadComponent:()=>import("./message/message").then(r=>r.Message)}
     ]}
 ]

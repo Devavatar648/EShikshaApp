@@ -32,7 +32,7 @@ export class Sidebar {
   }
 
   logout(){
-    localStorage.removeItem("shtoken");
+    localStorage.removeItem("eshikshaToken");
     this.router.navigateByUrl("");
   }
 

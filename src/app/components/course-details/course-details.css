@@ -1,3 +1,49 @@
-.course-banar{
-    background: linear-gradient(45deg, rgb(7, 52, 7),rgb(94, 241, 108),rgb(235, 249, 235));
+/* Glassmorphism Effect */
+.backdrop-blur {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.w-fit {
+  width: fit-content;
+}
+
+/* Typography */
+.ls-1 {
+  letter-spacing: 1px;
+}
+
+/* Animations */
+.transition-all {
+  transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+  transform: translateX(5px);
+  box-shadow: 0 0.5rem 1rem rgba(0,0,0,0.1) !important;
+  border-color: var(--bs-primary) !important;
+}
+
+.transition-hover:hover {
+  transform: translateY(-5px);
+}
+
+/* Header background overlay */
+.hero-section {
+  overflow: hidden;
+}
+
+/* Icon Box helper */
+.icon-box {
+  width: 45px;
+  height: 45px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Avatar Circle */
+.avatar-circle {
+  border-radius: 50%;
+  flex-shrink: 0;
 }
