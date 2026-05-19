@@ -29,16 +29,7 @@ export class Quizes {
   instructorCourses = signal<{ id: string, title: string, category:string }[]>([]);
 
   ngOnInit(): void {
-    this.courseService.instructorCourses$
-      .pipe(
-        map((carray) => {
-          if (!carray) {
-            return [];
-          }
-          return carray.map(c => ({ id: c._id??"", title: c.title, category:c.category }))
-        }
-        )
-      )
+    this.courseService.instructorCoursesList$
       .subscribe(courses => {
         if (courses) {
           this.instructorCourses.set(courses)

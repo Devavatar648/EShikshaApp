@@ -17,6 +17,7 @@ export class CourseService {
   userService = inject(UserService);
 
   instructorCourses$ = new BehaviorSubject<Course[]|null>(null);
+  instructorCoursesList$ = new BehaviorSubject<{id:string, title:string, category:string}[]|null>(null);
   studentCourses$=new BehaviorSubject<EnrolledCourse[]|null>(null);
 
   catalogCourses$ = new BehaviorSubject<Course[]>([]);
@@ -29,11 +30,11 @@ export class CourseService {
     if(instructor){
       params=params.set("instructor",instructor);
     }
-    return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint('')), {params});
+    return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl('course'), {params});
   }
 
   getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[], quizzes:any[]}, message:string}>{
-    return this.httpClient.get<{result:{course:Course,assignments:Assignments[], quizzes:any[]}, message:string}>(this.apiServices.getFullUrl(this.getCourseEndpoint(`${courseId}`)))
+    return this.httpClient.get<{result:{course:Course,assignments:Assignments[], quizzes:any[]}, message:string}>(this.apiServices.getFullUrl(`course/${courseId}`))
   }
 
   createCourse(course:Course):Observable<{result:Course, message:string}>{
@@ -58,20 +59,8 @@ export class CourseService {
     return this.httpClient.get<{result:EnrolledCourse[],message:string}>(this.apiServices.getFullUrl(`student/course`));
   }
 
-  //unEnrollCourse()
-  getCourseEndpoint(endpoint:string):string{
-    return `course/${endpoint}`;
+  getStudentsCourseReport(courseId:string):Observable<{result:null, message:string}>{
+    return this.httpClient.get<{result:null, message:string}>(this.apiServices.getFullUrl(`instructor/course/${courseId}/report`))
   }
-
-
-  // enrollmentAccessStatus = async (courseId?:string):Promise<'blocked'|'enrolled'|'notenrolled'>=>{
-  //   const user = await firstValueFrom(this.userService.activeUser$);
-  //   if(user?.role==='ADMIN' || user?.role==='INSTRUCTOR'){
-  //     return 'blocked';
-  //   }
-  //   const enrolledCourses = await firstValueFrom(this.studentCourses$);
-  //   if(enrolledCourses?.map(c=>c._id).includes(courseId??"")) return 'enrolled';
-  //   return 'notenrolled'
-  // }
 
 }

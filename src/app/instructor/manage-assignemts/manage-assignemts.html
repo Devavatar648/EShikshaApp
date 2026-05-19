@@ -14,7 +14,7 @@
 
             @for(course of instructorCourses(); track course.id){
             <option [value]="course.id">
-              {{ course.title }}-{{course.category}}
+              {{ course.title }} -- ({{course.category}})
             </option>
             }
 

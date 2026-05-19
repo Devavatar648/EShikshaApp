@@ -38,11 +38,6 @@ export class CourseDetails {
     })
   }
 
-  // hasAccess = (): boolean => {
-  //   return localStorage.getItem("eshikshaToken") ? true : false;
-  // }
-
-  // selectedCourse = signal(this.MOCK_SELECTED_COURSE);
   enroll() {
     this.courseService.enrollCourse(this.courseId1).subscribe({
       next:_=>{
@@ -70,7 +65,6 @@ export class CourseDetails {
   }
 
   startQuiz(quizId:string){
-    console.log(quizId);
     if(confirm("Are you want to start this quiz?")){
       this.router.navigate(["/coursedetails", this.courseId1, 'quiz', quizId]);
     }
@@ -87,13 +81,10 @@ export class CourseDetails {
         if (user?.role === 'ADMIN' || user?.role === 'INSTRUCTOR') {
           return 'blocked';
         }
-        debugger;
         const hasCourse = enrolledCourses?.some(encourses => encourses.course._id === courseId);
         if (hasCourse) {
-          debugger;
           return 'enrolled';
         }
-        debugger;
         return 'notenrolled';
       })
     );
