@@ -4,10 +4,12 @@ import { UserService } from '../../services/user-service';
 import { Course } from '../../models/course';
 import { BaseChartDirective } from 'ng2-charts';
 import { ChartConfiguration, ChartType } from 'chart.js';
+import { DashboardServices } from '../../services/dashboard-services';
+import { SlicePipe } from '@angular/common';
 
 @Component({
   selector: 'app-insdashboard',
-  imports: [BaseChartDirective],
+  imports: [BaseChartDirective, SlicePipe],
   templateUrl: './insdashboard.html',
   styleUrl: './insdashboard.css',
 })
@@ -15,6 +17,7 @@ export class Insdashboard {
 
   private courseService = inject(CourseService);
   private userService = inject(UserService);
+  private dashboardService = inject(DashboardServices);
 
  lovedCourses = signal([
     { _id: '1', title: 'Mastering Node.js API', rating: 4.9, enrolled: 450, loveScore: 98 },
@@ -50,5 +53,34 @@ export class Insdashboard {
       x: { grid: { display: false } }
     }
   };
+
+  dashboardData = signal<any>('');
+
+  ngOnInit(){
+    this.dashboardService.getInstructorDashboard().subscribe({
+      next:res=>{
+        this.dashboardData.set(res.result);
+        console.log(res.result);
+      },
+      error:err=>{
+        console.log(err);
+      }
+    })
+  }
+
+
+  getTotalStudents():number{
+    return this.dashboardData()?.students?.map((c:any)=>c.totalStudents)?.reduce((a:number,b:number)=>a+b)??0;
+  }
+
+  getAverageRating():string{
+    return (this.dashboardData()?.courses?.map((c:any)=>c.avarageRating)?.reduce((a:number,b:number)=>a+b)/this.dashboardData()?.courses?.length).toFixed(1);
+  }
+
+
+  getTopThreeCourse(){
+    return this.dashboardData()?.courses?.slice(0,3);
+  }
+
 
 }

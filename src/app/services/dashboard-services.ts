@@ -14,4 +14,8 @@ export class DashboardServices {
   getAdminDashboard():Observable<{result:any, message:string}>{
     return this.httpClient.get<{result:any, message:string}>(this.apiService.getFullUrl("admin/dashboard"));
   }
+
+  getInstructorDashboard():Observable<{result:any, message:string}>{
+    return this.httpClient.get<{result:any, message:string}>(this.apiService.getFullUrl("instructor/dashboard"));
+  }
 }

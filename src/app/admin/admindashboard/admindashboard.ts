@@ -3,10 +3,11 @@ import { ChartConfiguration, ChartOptions } from 'chart.js';
 import { BaseChartDirective } from 'ng2-charts';
 import { LoadingService } from '../../services/loading-service';
 import { DashboardServices } from '../../services/dashboard-services';
+import { CommonModule, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-admindashboard',
-  imports: [BaseChartDirective],
+  imports: [BaseChartDirective, DatePipe, CommonModule],
   templateUrl: './admindashboard.html',
   styleUrl: './admindashboard.css',
 })
@@ -15,6 +16,7 @@ export class Admindashboard {
   private dashboardService = inject(DashboardServices);
 
   dashboardData = signal<any>('');
+  currentDate = new Date();
   lineChartDataSets = [
     {
       data: [0, 0, 0, 0, 0],
@@ -54,13 +56,11 @@ export class Admindashboard {
     this.dashboardService.getAdminDashboard().subscribe({
       next:res=>{
         this.dashboardData.set(res.result);
-        console.log(res.result);
         this.getLineChartData(res.result.userDetails[0].monthlyEnrollments);
         this.lineChartData.set({
           labels: this.getMonthsList(this.monthLabels),
           datasets: this.lineChartDataSets
         })
-        console.log(this.lineChartData());
         this.showChart.set(true);
       },
       error:err=>{
@@ -72,7 +72,6 @@ export class Admindashboard {
 
   getLineChartData(monthlyEnrollments:any){
     const months = new Set<number>();
-    console.log(monthlyEnrollments);
     const instructor = monthlyEnrollments.filter((e:any)=>e.role==="INSTRUCTOR");
     const students = monthlyEnrollments.filter((e:any)=>e.role==="STUDENT");
 
@@ -111,6 +110,14 @@ export class Admindashboard {
         default: return "Invalid Month";
       }
     });
+  }
+
+  getCoursePercentange(averageRating:number){
+    return Math.floor((averageRating/5)*100)
+  }
+
+  getTotalUser(){
+    return this.dashboardData()?.userDetails[0]?.totalUser.map((u:any)=>u.total).reduce((a:number,b:number)=>a+b)
   }
 
 }
