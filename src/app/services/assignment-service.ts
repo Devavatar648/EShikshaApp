@@ -50,6 +50,7 @@ export class AssignmentService {
 
   //working
   downloadAssignmentInstructor(courseId: string, fileId: string | undefined): Observable<Blob> {
+
     const url = this.apiServices.getFullUrl(`instructor/course/${courseId}/assignment/download/${fileId}`);
     return this.httpClient.get(url, { responseType: 'blob' });
   }
@@ -76,6 +77,12 @@ export class AssignmentService {
     );
   }
 
+  getMarks(courseId:string){
+    return this.httpClient.get<{ result:{course:string,marks:number}[], message: string }|undefined>(
+      this.apiServices.getFullUrl(`student/course/${courseId}/assignment-result`)
+    );
+  }
+
   
   giveMarks(resultId: string,courseId:string, marks: number) {
     console.log(marks);
@@ -91,24 +98,5 @@ export class AssignmentService {
       this.apiServices.getFullUrl(`assignment-result/${resultId}`)
     );
   }
-
-
-
-  // downloadAssignment(courseId: string, fileId: string) {
-  //   // Grab the token from wherever you store it (e.g., localStorage)
-  //   const token = localStorage.getItem('token') || '';
-
-  //   // Append it to the URL as a query string parameter
-  //   const url = this.apiServices.getFullUrl(
-  //     `instructor/course/${courseId}/assignment/download/${fileId}?token=${encodeURIComponent(token)}`
-  //   );
-
-  //   window.open(url, '_blank');
-  // }
-
-  // downloadAssignment(courseId: string, fileId: string|undefined) {
-  //   const url = this.apiServices.getFullUrl(`student/course/${courseId}/assignment/download/${fileId}`);
-  //   window.open(url, '_blank');
-  // }
 
 }

@@ -307,7 +307,7 @@ export class ManageAssignemts {
 
   // onDeleteResponse(resultId:string){}
 
-  AssignmentResponse(assignment:any){
+  viewResponse(assignment:any){
       this.viewResponses=!this.viewResponses;
       console.log(assignment);
       this.assignmentService.searchResult(assignment.course,assignment._id).subscribe(

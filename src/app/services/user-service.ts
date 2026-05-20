@@ -17,6 +17,10 @@ export class UserService {
     return this.httpClient.post<{result:{token:string}, message:string}>(this.apiServices.getFullUrl("auth/login"), user);
   }
 
+  logout():Observable<{result:{token:string},message:string}>{
+      return this.httpClient.post<{result:{token:string},message:string}>(this.apiServices.getFullUrl("user/logout"), {});
+  }
+
   register(user:User):Observable<{result:any, message:string|string[]}>{
     return this.httpClient.post<{result:any, message:string|string[]}>(this.apiServices.getFullUrl("auth/register"), user);
   }
