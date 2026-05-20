@@ -13,7 +13,9 @@ export class Course {
         },
         public rating?: {
             totalUsers?: number;
-            average?: number;
+            average?: {
+                $numberDecimal?:number
+            };
         },
         public feedback?: any[],
         public createdAt?: string,
