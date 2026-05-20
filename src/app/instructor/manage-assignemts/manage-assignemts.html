@@ -14,7 +14,7 @@
 
             @for(course of instructorCourses(); track course.id){
             <option [value]="course.id">
-              {{ course.title }}-{{course.category}}
+              {{ course.title }} -- ({{course.category}})
             </option>
             }
 
@@ -113,7 +113,7 @@
             </button>
             <button class="btn btn-sm btn-outline-primary" (click)="onEdit(item)"><i
                 class="bi bi-pencil-square"></i></button>
-            <button class="btn btn-sm btn-outline-danger" (click)="onDelete(item._id)"><i
+            <button class="btn btn-sm btn-outline-danger" (click)="onDelete(item?._id)"><i
                 class="bi bi-trash"></i></button>
             <button class="btn btn-success " (click)="viewResponse(item)">View Responses</button>
           </div>

@@ -42,25 +42,12 @@ export class ManageAssignemts {
  
   //Getting instructor courses ==========================================================
   ngOnInit() {
-    this.courseService.instructorCourses$
-      .pipe(
-        map((courseArray) => {
-          if (!courseArray) {
-            return [];
-          }
-          return courseArray.map(c => ({ id: c._id ?? "", title: c.title, category: c.category }))
-        }
-        )
-      )
+    this.courseService.instructorCoursesList$
       .subscribe(courses => {
         if (courses) {
           this.instructorCourses.set(courses)
         }
       })
-
-      // this.assignmentService.searchResult(this.instructorCourses()[0].id,this.publishedAssignments()[0]._id)
- 
-    //======================================================================================
  
     this.assignmentForm = this.fb.group({
       courseId: ['', Validators.required],
