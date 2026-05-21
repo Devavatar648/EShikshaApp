@@ -42,7 +42,7 @@
       <div class="card border-0 shadow-sm p-4 h-100 rounded-4">
         <span class="text-muted small fw-bold text-uppercase">Overall Completion</span>
         <div class="d-flex align-items-center justify-content-between mt-3">
-          <div class="h4 fw-bold mb-0">{{ ((getCourseCompletedCount()/data?.enrolledCourses?.length)*100).toFixed(2) }}%
+          <div class="h4 fw-bold mb-0">{{ ((getCourseCompletedCount()/(data?.enrolledCourses?.length||1))*100).toFixed(2) || 0 }}%
           </div>
           <div class="progress flex-grow-1 ms-3" style="height: 8px; border-radius: 10px;">
             <div class="progress-bar bg-success"

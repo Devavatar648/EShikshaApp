@@ -9,6 +9,7 @@ import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user-service';
 import { combineLatest, map, Observable } from 'rxjs';
 import { TokenService } from '../../services/token-service';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-course-details',
@@ -55,10 +56,10 @@ export class CourseDetails {
         const currentCourses = this.courseService.studentCourses$.getValue()??[];
         this.courseService.studentCourses$.next([res.result, ...currentCourses]);
         this.selectedCourse.update(course=>{
-          if(course)course.isEnrolled=true;
-          return course;
+          if(!course) return null;
+          return {...course, isEnrolled:true};
         });
-        this.toastService.success(`Successfully enrolled in ${this.selectedCourse()?.course?.title}!`);
+        this.toastService.success(`Successfully enrolled in ${this.selectedCourse()?.course?.title||""}!`);
       },
       error:err=>{
         let message = err?.error?.message;
@@ -73,7 +74,11 @@ export class CourseDetails {
   unrenroll(){
     this.courseService.deleteEnrollment(this.courseId1).subscribe({
       next:res=>{
-        this.toastService.success(res.message)
+        this.selectedCourse.update(course=>{
+          if(!course) return null;
+          return {...course, isEnrolled:false};
+        });
+        this.toastService.success(res.message);
       },
       error:err=>{
         this.toastService.error(err.error.message??"Internal Server Error");
@@ -98,20 +103,16 @@ export class CourseDetails {
     }
   }
 
-  enrollmentAccessStatus():Observable<'blocked' | 'enrolled' | 'notenrolled'>{
+  enrollmentAccessStatus():Observable<'blocked' | 'nonblock'>{
     return combineLatest([
       this.userService.activeUser$
     ]).pipe(
       map(([user])=>{
-        if(!user) return 'notenrolled'
         if (user?.role === 'ADMIN' || user?.role === 'INSTRUCTOR') {
           return 'blocked';
         }
-        const hasCourse = this.selectedCourse()?.isEnrolled;
-        if (hasCourse) {
-          return 'enrolled';
-        }
-        return 'notenrolled';
+
+        return 'nonblock'
       })
     )
   }
