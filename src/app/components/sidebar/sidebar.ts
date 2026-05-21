@@ -45,7 +45,7 @@ export class Sidebar {
          next:(res)=>{
           localStorage.removeItem("eshikshaToken");
           this.router.navigateByUrl("");
-          this.toastService.success(res.message);
+          this.toastService.warning(res.message);
          },
          error:(err)=>{
           this.toastService.error("problem during logout")

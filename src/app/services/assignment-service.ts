@@ -77,15 +77,15 @@ export class AssignmentService {
     );
   }
 
-  getMarks(courseId:string){
-    return this.httpClient.get<{ result:{course:string,marks:number}[], message: string }|undefined>(
+  getMarks(courseId:string):Observable<{ result:{[key:string]:number}, message: string }>{
+    return this.httpClient.get<{ result:{[key:string]:number}, message: string }>(
       this.apiServices.getFullUrl(`student/course/${courseId}/assignment-result`)
     );
   }
 
   
   giveMarks(resultId: string,courseId:string, marks: number) {
-    console.log(marks);
+    //console.log(marks);
     return this.httpClient.patch<{ result: AssignmentsResult, message: string }>(
       this.apiServices.getFullUrl(`instructor/course/${courseId}/assignment-result/${resultId}`),
       { marks }

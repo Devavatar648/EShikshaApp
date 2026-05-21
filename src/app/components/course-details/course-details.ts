@@ -16,10 +16,10 @@ import { combineLatest, map, Observable } from 'rxjs';
   styleUrl: './course-details.css',
 })
 export class CourseDetails {
-  activatedRoute = inject(ActivatedRoute);
-  courseService = inject(CourseService);
-  userService = inject(UserService);
-  assignmentService=inject(AssignmentService);
+  private activatedRoute = inject(ActivatedRoute);
+  private courseService = inject(CourseService);
+  private userService = inject(UserService);
+  private assignmentService=inject(AssignmentService);
   private toastService=inject(ToastrService);
   
   private router = inject(Router);
@@ -29,7 +29,7 @@ export class CourseDetails {
   enrolledCourseList = signal<[]>([]);
 
   selectedCourse = signal<{ course: Course, assignments: Assignments[], quizzes:any[] } | null>(null);
-  marksArray=signal<{courseId:string,marks:number}|undefined>(undefined);
+  marksArray=signal<{[key:string]:number}|null>(null);
 
   ngOnInit() {
     this.courseId1 = this.activatedRoute.snapshot.params['courseId'];
@@ -37,6 +37,18 @@ export class CourseDetails {
       this.selectedCourse.set(res.result);
       console.log(res.result);
     })
+
+    this.assignmentService.getMarks(this.courseId1).subscribe(
+      {
+        next:(res)=>{
+          this.marksArray.set(res.result);
+          console.log(this.marksArray()); 
+        },
+        error:(err)=>{
+            this.toastService.error("something went wrong");
+        }
+      }
+    )
   }
 
   enroll() {
