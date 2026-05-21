@@ -41,7 +41,7 @@ export class EnrolledCourses {
       }
     })
   }
-
+   
 
   getNameAvterUrl(name:string){
     const nameArr = name.split(" ");

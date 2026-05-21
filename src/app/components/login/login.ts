@@ -29,7 +29,7 @@ export class Login {
     email: ["",[Validators.required]],
     password: ["",[Validators.required]]
   })
-
+  
   login(){
     this.loadingService.isLoading$.next(true);
     const {email, password} = this.loginForm.value;
@@ -52,7 +52,7 @@ export class Login {
       })
     }
   }
-
+ 
   goToHome(){
     this.router.navigate([""]);
   }
