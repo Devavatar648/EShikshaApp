@@ -67,4 +67,7 @@ export class CourseService {
     return this.httpClient.get<{result:null, message:string}>(this.apiServices.getFullUrl(`instructor/course/${courseId}/report`))
   }
 
+  deleteEnrollment(courseId:string):Observable<{result:null,message:string}>{
+    return this.httpClient.delete<{result:null,message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/enroll`))
+  }
 }
