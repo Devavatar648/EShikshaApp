@@ -33,8 +33,12 @@ export class CourseService {
     return this.httpClient.get<{result:Course[],message:string}>(this.apiServices.getFullUrl('course'), {params});
   }
 
-  getCourseById(courseId:string):Observable<{result:{course:Course,assignments:Assignments[], quizzes:any[], totalEnrollments:number}, message:string}>{
-    return this.httpClient.get<{result:{course:Course,assignments:Assignments[], quizzes:any[], totalEnrollments:number}, message:string}>(this.apiServices.getFullUrl(`course/${courseId}`))
+  getCourseById(courseId:string, studentId?:string):Observable<{result:{course:Course,assignments:Assignments[], quizzes:any[], totalEnrollments:number, isEnrolled:boolean}, message:string}>{
+    let params = new HttpParams();
+    if(studentId){
+      params = params.set("studentId", studentId);
+    }
+    return this.httpClient.get<{result:{course:Course,assignments:Assignments[], quizzes:any[], totalEnrollments:number, isEnrolled:boolean}, message:string}>(this.apiServices.getFullUrl(`course/${courseId}`), {params})
   }
 
   createCourse(course:Course):Observable<{result:Course, message:string}>{

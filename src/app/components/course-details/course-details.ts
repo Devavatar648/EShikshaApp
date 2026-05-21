@@ -8,6 +8,7 @@ import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user-service';
 import { combineLatest, map, Observable } from 'rxjs';
+import { TokenService } from '../../services/token-service';
 
 @Component({
   selector: 'app-course-details',
@@ -16,23 +17,24 @@ import { combineLatest, map, Observable } from 'rxjs';
   styleUrl: './course-details.css',
 })
 export class CourseDetails {
-  activatedRoute = inject(ActivatedRoute);
-  courseService = inject(CourseService);
-  userService = inject(UserService);
-  assignmentService=inject(AssignmentService);
+  private activatedRoute = inject(ActivatedRoute);
+  private courseService = inject(CourseService);
+  private userService = inject(UserService);
+  private assignmentService=inject(AssignmentService);
   private toastService=inject(ToastrService);
-  
-  router = inject(Router);
+  private router = inject(Router);
+  private tokenService = inject(TokenService);
+
   courseId1!: string;
-
-  // enrolledAccessStatus = signal<'blocked'|'enrolled'|'notenrolled'>('blocked');
-  enrolledCourseList = signal<[]>([]);
-
-  selectedCourse = signal<{ course: Course, assignments: Assignments[], quizzes:any[], totalEnrollments:number } | null>(null);
+  selectedCourse = signal<{ course: Course, assignments: Assignments[], quizzes:any[], totalEnrollments:number, isEnrolled:boolean } | null>(null);
 
   ngOnInit() {
     this.courseId1 = this.activatedRoute.snapshot.params['courseId'];
-    this.courseService.getCourseById(this.courseId1).subscribe(res => {
+    let user;
+    if(localStorage.getItem("eshikshaToken")){
+      user = this.tokenService.decodeToken(localStorage.getItem("eshikshaToken")??"")
+    }
+    this.courseService.getCourseById(this.courseId1, user?._id??'').subscribe(res => {
       this.selectedCourse.set(res.result);
       console.log(res.result);
     })
@@ -43,6 +45,10 @@ export class CourseDetails {
       next:res=>{
         const currentCourses = this.courseService.studentCourses$.getValue()??[];
         this.courseService.studentCourses$.next([res.result, ...currentCourses]);
+        this.selectedCourse.update(course=>{
+          if(course)course.isEnrolled=true;
+          return course;
+        });
         this.toastService.success(`Successfully enrolled in ${this.selectedCourse()?.course?.title}!`);
       },
       error:err=>{
@@ -76,24 +82,22 @@ export class CourseDetails {
     }
   }
 
-
-   enrollmentAccessStatus(courseId?: string): Observable<'blocked' | 'enrolled' | 'notenrolled'> {
+  enrollmentAccessStatus():Observable<'blocked' | 'enrolled' | 'notenrolled'>{
     return combineLatest([
-      this.userService.activeUser$,
-      this.courseService.studentCourses$
+      this.userService.activeUser$
     ]).pipe(
-      map(([user, enrolledCourses]) => {
+      map(([user])=>{
         if(!user) return 'notenrolled'
         if (user?.role === 'ADMIN' || user?.role === 'INSTRUCTOR') {
           return 'blocked';
         }
-        const hasCourse = enrolledCourses?.some(encourses => encourses.course._id === courseId);
+        const hasCourse = this.selectedCourse()?.isEnrolled;
         if (hasCourse) {
           return 'enrolled';
         }
         return 'notenrolled';
       })
-    );
+    )
   }
 
 }

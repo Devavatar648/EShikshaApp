@@ -1,13 +1,11 @@
 @if (selectedCourse(); as data) {
-  @if(enrollmentAccessStatus(courseId1) | async; as status){
+  @if(enrollmentAccessStatus() | async; as status){
     <div class="course-page-wrapper bg-light min-vh-100">
-      <!-- Modern Hero Header -->
       <header class="hero-section position-relative py-5 text-white"
         [style.background]="'linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url(' + data.course.imageUrl + ')'"
         style="background-size: cover; background-position: center;">
         <div class="container py-4">
           <div class="row g-5 align-items-center">
-            <!-- Left: Course Narrative -->
             <div class="col-lg-7">
               <span class="badge rounded-pill bg-success mb-3 px-3 py-2 text-uppercase fw-bold ls-1">
                 {{ data?.course?.category }}
@@ -27,8 +25,6 @@
                   <span class="fw-bold">{{ data?.totalEnrollments }}</span> Students
                 </div>
               </div>
-    
-              <!-- Instructor Quick Info -->
               <div
                 class="d-flex align-items-center p-3 rounded-4 bg-white bg-opacity-10 backdrop-blur border border-white border-opacity-25 shadow-sm w-fit">
                 <div
@@ -42,8 +38,6 @@
                 </div>
               </div>
             </div>
-    
-            <!-- Right: Action Sidebar Preview -->
              @if(status!=='blocked'){
                <div class="col-lg-5 d-none d-lg-block">
                  <div class="card border-0 rounded-4 shadow-lg overflow-hidden transition-hover">
@@ -69,20 +63,15 @@
         </div>
       </header>
     
-      <!-- Main Content Body -->
       <main class="container py-5">
         <div class="row g-5">
-          <!-- Left Column: Details & Curriculum -->
           <div class="col-lg-8">
-            <!-- About Section -->
             <section class="mb-5">
               <h3 class="fw-bold mb-4 border-start border-4 border-success ps-3">About this Course</h3>
               <p class="fs-5 text-secondary lh-lg">
                 {{ data?.course?.description }}
               </p>
             </section>
-    
-            <!-- Curriculum Section -->
             <section class="mb-5">
               <div class="d-flex justify-content-between align-items-end mb-4">
                 <h3 class="fw-bold mb-0 border-start border-4 border-primary ps-3">Learning Path</h3>
@@ -91,8 +80,6 @@
                 </span>
     
               </div>
-    
-              <!-- Quizzes -->
               <h5 class="text-uppercase small fw-bold text-muted mb-3 mt-4">Knowledge Checks</h5>
               <div class="vstack gap-3 mb-4">
                 @for (quiz of data.quizzes; track quiz._id) {
@@ -115,8 +102,6 @@
                 </div>
                 }
               </div>
-    
-              <!-- Assignments -->
               <div class="vstack gap-3">
                 <h3 class="text-uppercase small fw-bold text-muted mb-3">Assignments</h3>
                 @for (task of data.assignments; track task.title) {
@@ -130,7 +115,6 @@
                       Marks</small>
                   </div>
                   @if(status==='enrolled'){
-                  <!-- <i class="bi bi-download text-primary"></i> -->
                   <button class="btn btn-primary" (click)="goToSubmitAssignment(task)">Submit Assignment</button>
                   }@else{
                   <i class="bi bi-lock-fill text-danger"></i>
@@ -140,7 +124,6 @@
               </div>
             </section>
           </div>
-          <!-- Right Column: Stats & Enrollment (Sticky) -->
           <div class="col-lg-4">
             <div class="sticky-top" style="top: 2rem; z-index: 10;">
               <div class="card border-0 shadow rounded-4 mb-4">
@@ -167,11 +150,6 @@
         </div>
       </main>
     </div>
-    <!-- <div class="d-grid mt-4">
-      <button class="btn btn-dark btn-lg rounded-3 py-3 fw-bold" (click)="unrenroll()">
-        UnEnroll
-      </button>
-    </div> -->
   }
 } @else {
 <div class="d-flex flex-column align-items-center justify-content-center min-vh-100">

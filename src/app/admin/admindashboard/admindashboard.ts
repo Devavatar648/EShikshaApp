@@ -56,7 +56,7 @@ export class Admindashboard {
     this.dashboardService.getAdminDashboard().subscribe({
       next:res=>{
         this.dashboardData.set(res.result);
-        this.getLineChartData(res.result.userDetails[0].monthlyEnrollments);
+        this.getLineChartData(res.result.userDetails.monthlyEnrollments);
         this.lineChartData.set({
           labels: this.getMonthsList(this.monthLabels),
           datasets: this.lineChartDataSets
@@ -117,7 +117,7 @@ export class Admindashboard {
   }
 
   getTotalUser(){
-    return this.dashboardData()?.userDetails[0]?.totalUser.map((u:any)=>u.total).reduce((a:number,b:number)=>a+b)
+    return this.dashboardData()?.userDetails?.totalUser.map((u:any)=>u.total).reduce((a:number,b:number)=>a+b)
   }
 
 }
