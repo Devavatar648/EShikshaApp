@@ -70,4 +70,9 @@ export class CourseService {
   deleteEnrollment(courseId:string):Observable<{result:null,message:string}>{
     return this.httpClient.delete<{result:null,message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/enroll`))
   }
+
+
+  submitRating(courseId:string, data:any):Observable<{result:{feedback:any[]}, message:string}>{
+    return this.httpClient.post<{result:{feedback:any[]}, message:string}>(this.apiServices.getFullUrl(`student/course/${courseId}/review`), data);
+  }
 }

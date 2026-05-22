@@ -115,16 +115,16 @@
                   Marks</small>
               </div>
               @if(data?.isEnrolled){
-                @if(marksArray() && marksArray()?.[task._id]){
-                  <span class="badge bg-success-subtle fs-6 px-3 py-2">
-                    {{ marksArray()?.[task._id] }} / {{ task.totalMarks }}
-                  </span>
-                }@else{
-                  <button class="btn btn-success" (click)="goToSubmitAssignment(task)">Submit</button>
-                }
+              @if(marksArray() && marksArray()?.[task._id]){
+              <span class="badge bg-success-subtle fs-6 px-3 py-2">
+                {{ marksArray()?.[task._id] }} / {{ task.totalMarks }}
+              </span>
+              }@else{
+              <button class="btn btn-success" (click)="goToSubmitAssignment(task)">Submit</button>
+              }
               }
               @else{
-                <i class="bi bi-lock-fill text-danger"></i>
+              <i class="bi bi-lock-fill text-danger"></i>
               }
             </div>
             }
@@ -157,10 +157,87 @@
     </div>
   </main>
 </div>
+<!-- Feedback Submission Section: Only visible if enrolled -->
+@if(data?.isEnrolled){
+  <div class="card border-0 shadow-sm mb-4">
+    <div class="card-body p-4">
+      <h5 class="card-title fw-bold mb-3 text-dark">Leave Your Feedback</h5>
+
+      <div class="mb-4 bg-light p-3 rounded-3">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <label for="ratingRange" class="form-label fw-semibold text-secondary mb-0">Your Rating</label>
+          <div class="d-flex align-items-center gap-2">
+            @if (selectedRating === 0) {
+              <span class="badge bg-danger px-3 py-2 fs-6">0 - Bad <i class="bi bi-emoji-frown-fill ms-1"></i></span>
+            } @else if (selectedRating > 0 && selectedRating < 3.5) {
+              <span class="badge bg-warning text-dark px-3 py-2 fs-6">{{ selectedRating }} - Average <i class="bi bi-emoji-neutral-fill ms-1"></i></span>
+            } @else if (selectedRating >= 3.5 && selectedRating < 5) {
+              <span class="badge bg-info text-dark px-3 py-2 fs-6">{{ selectedRating }} - Good <i class="bi bi-emoji-smile-fill ms-1"></i></span>
+            } @else if (selectedRating === 5) {
+              <span class="badge bg-success px-3 py-2 fs-6">5 - Excellent Model <i class="bi bi-stars ms-1"></i></span>
+            }
+          </div>
+        </div>
+        <input 
+          type="range" 
+          class="form-range custom-slider" 
+          id="ratingRange" 
+          min="0" 
+          max="5" 
+          step="0.5" 
+          [(ngModel)]="selectedRating">
+          
+        <div class="d-flex justify-content-between text-muted small px-1 mt-1 fw-medium">
+          <span>0 (Bad)</span>
+          <span>1.0</span>
+          <span>2.0</span>
+          <span>3.0</span>
+          <span class="text-info fw-bold">3.5 (Good)</span>
+          <span>4.0</span>
+          <span class="text-success fw-bold">5.0 (Excellent)</span>
+        </div>
+      </div>
+      
+      <div class="input-group">
+        <input type="text" class="form-control form-control-lg border-end-0 bg-light" [(ngModel)]="feedback" placeholder="Share your experience with this course...">
+        <button class="btn btn-primary px-4 fw-semibold border-start-0" type="button" (click)="submitReview()">
+          <i class="bi bi-send-fill me-2"></i>Submit
+        </button>
+      </div>
+    </div>
+  </div>
 }
-}@else {
-<div class="d-flex flex-column align-items-center justify-content-center min-vh-100">
-  <div class="spinner-border text-success mb-3" style="width: 3rem; height: 3rem;" role="status"></div>
-  <p class="text-muted fw-medium">Launching your mission...</p>
+
+<!-- Feedbacks List Section -->
+<div class="feedback-list-container">
+  <div class="d-flex align-items-center mb-3">
+    <h4 class="fw-bold mb-0 me-2">Student Reviews</h4>
+    <span class="badge bg-secondary rounded-pill fs-6">{{ data?.course?.feedback?.length || 0 }}</span>
+  </div>
+
+  @for(feedback of data?.course?.feedback; track feedback._id){
+    <div class="card border-0 shadow-sm mb-3 feedback-card">
+      <div class="card-body p-4">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <div class="d-flex align-items-center">
+            <img [src]="`https://ui-avatars.com/api/?name=${feedback.name}&background=random`" class="rounded-circle me-3" width="32" alt="avtar">
+            <h6 class="card-subtitle fw-bold text-dark mb-0">{{feedback.name}}</h6>
+          </div>
+        </div>
+        
+        <p class="card-text text-secondary mt-3 lh-base">
+          <i class="bi bi-quote text-light-emphasis fs-4 me-1 align-middle"></i>
+          {{feedback.message}}
+        </p>
+      </div>
+    </div>
+  } @empty {
+    <!-- Empty State if there are no reviews -->
+    <div class="text-center py-5 text-muted">
+      <i class="bi bi-chat-left-heart fs-1 text-light-emphasis"></i>
+      <p class="mt-2 mb-0">No reviews yet. Be the first to share your thoughts!</p>
+    </div>
+  }
 </div>
+}
 }

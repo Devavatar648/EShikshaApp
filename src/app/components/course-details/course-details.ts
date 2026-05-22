@@ -10,10 +10,11 @@ import { UserService } from '../../services/user-service';
 import { combineLatest, map, Observable } from 'rxjs';
 import { TokenService } from '../../services/token-service';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-course-details',
-  imports: [DatePipe, AsyncPipe,CommonModule],
+  imports: [DatePipe, AsyncPipe,CommonModule, FormsModule],
   templateUrl: './course-details.html',
   styleUrl: './course-details.css',
 })
@@ -28,7 +29,9 @@ export class CourseDetails {
 
   courseId1!: string;
   selectedCourse = signal<{ course: Course, assignments: Assignments[], quizzes:any[], totalEnrollments:number, isEnrolled:boolean } | null>(null);
-
+  selectedRating = 0;
+  feedback = "";
+  userName = "";
   currentRating = signal<number>(0);
 
   setRating(ratingValue: number) {
@@ -47,14 +50,14 @@ export class CourseDetails {
     }
     this.courseService.getCourseById(this.courseId1, user?._id??'').subscribe(res => {
       this.selectedCourse.set(res.result);
-      console.log(res.result);
+      // console.log(res.result);
     })
 
     this.assignmentService.getMarks(this.courseId1).subscribe(
       {
         next:(res)=>{
           this.marksArray.set(res.result);
-          console.log(this.marksArray()); 
+          // console.log(this.marksArray()); 
         },
         error:(err)=>{
             this.toastService.error("something went wrong");
@@ -120,6 +123,7 @@ export class CourseDetails {
       this.userService.activeUser$
     ]).pipe(
       map(([user])=>{
+        this.userName=user?.name??"";
         if (user?.role === 'ADMIN' || user?.role === 'INSTRUCTOR') {
           return 'blocked';
         }
@@ -127,5 +131,25 @@ export class CourseDetails {
         return 'nonblock'
       })
     )
+  }
+
+
+  submitReview(){
+    if(this.selectedRating===0 || this.feedback===""){
+      this.toastService.warning("correctly fill rating and feedback");
+      return;
+    }
+    this.courseService.submitRating(this.courseId1, {name:this.userName, rating:this.selectedRating, feedback:this.feedback}).subscribe({
+      next:res=>{
+        this.selectedCourse.update(c=>{
+          if(!c) return null;
+          return {...c, feedback:res.result?.feedback??[]}
+        })
+        this.toastService.success(res.message);
+      },
+      error:err=>{
+        this.toastService.error(err.error.message??"Internal server error");
+      }
+    })
   }
 }

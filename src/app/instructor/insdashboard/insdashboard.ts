@@ -53,7 +53,12 @@ export class Insdashboard {
 
   getAverageRating():string{
     if(this.dashboardData()?.courses?.length===0)return "0.0";
-    return (this.dashboardData()?.courses?.map((c:any)=>c.avarageRating?.$numberDecimal)?.reduce((a:number,b:number)=>a+b)/this.dashboardData()?.courses?.length).toFixed(1)??0;
+    return (this.dashboardData()?.courses?.map((c:any)=>{
+      if(c.avarageRating?.$numberDecimal){
+        return parseInt(c.avarageRating?.$numberDecimal)
+      }
+      return 0;
+    })?.reduce((a:number,b:number)=>a+b)/this.dashboardData()?.courses?.length).toFixed(1)??0;
   }
 
 
