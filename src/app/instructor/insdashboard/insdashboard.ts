@@ -47,11 +47,13 @@ export class Insdashboard {
 
 
   getTotalStudents():number{
+    if(this.dashboardData()?.students?.length===0)return 0;
     return this.dashboardData()?.students?.map((c:any)=>c.totalStudents)?.reduce((a:number,b:number)=>a+b)??0;
   }
 
   getAverageRating():string{
-    return (this.dashboardData()?.courses?.map((c:any)=>c.avarageRating)?.reduce((a:number,b:number)=>a+b)/this.dashboardData()?.courses?.length).toFixed(1);
+    if(this.dashboardData()?.courses?.length===0)return "0.0";
+    return (this.dashboardData()?.courses?.map((c:any)=>c.avarageRating?.$numberDecimal)?.reduce((a:number,b:number)=>a+b)/this.dashboardData()?.courses?.length).toFixed(1)??0;
   }
 
 

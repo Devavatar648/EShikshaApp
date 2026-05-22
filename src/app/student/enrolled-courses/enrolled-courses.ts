@@ -20,7 +20,6 @@ export class EnrolledCourses {
   toastService = inject(ToastrService);
 
   courseList = signal<EnrolledCourse[]>([]);
-  totalCourses = 0;
   activeTab:string = 'all';
 
   ngOnInit(): void {
@@ -29,7 +28,6 @@ export class EnrolledCourses {
         this.courseService.getEnrolledCourse().subscribe({
           next: courseResult => {
             this.courseService.studentCourses$.next(courseResult.result);
-            this.totalCourses=courseResult.result.length;
             this.courseList.set(courseResult.result)
           },
           error: err => {
@@ -41,7 +39,7 @@ export class EnrolledCourses {
       }
     })
   }
-
+   
 
   getNameAvterUrl(name:string){
     const nameArr = name.split(" ");

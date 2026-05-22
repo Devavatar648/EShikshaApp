@@ -20,5 +20,6 @@ export class Course {
         public feedback?: any[],
         public createdAt?: string,
         public updatedAt?: string,
+        public enrolled?: number
     ) {}
 }
