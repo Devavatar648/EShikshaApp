@@ -1,15 +1,19 @@
 import { HttpInterceptorFn } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { TokenService } from '../services/token-service';
+import { firstValueFrom } from 'rxjs';
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
+  const tokenService = inject(TokenService);
+
   let authReq = req;
   if(req.url.includes("auth") || req.url.includes('register')){
     return next(authReq);
   }else{
-    const token = localStorage.getItem("eshikshaToken");
-    if(token){
+    if(tokenService.eshikshaToken){
       authReq = req.clone({
         setHeaders:{
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${tokenService.eshikshaToken}`
         }
       });
     }

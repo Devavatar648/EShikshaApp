@@ -45,7 +45,7 @@
                     <hr>
                     <div>
                         <p class="text-muted"><i class="bi bi-star-fill text-warning"></i> Highest Rating</p>
-                        <span>{{dashboardData()?.courseDetails.topCourses[0].averageRating}}</span>
+                        <span>{{dashboardData()?.courseDetails.topCourses[0].averageRating.$numberDecimal}}</span>
                     </div>
                 </div>
             </div>
@@ -79,7 +79,7 @@
                         <div class="mb-4">
                         <div class="d-flex justify-content-between mb-1">
                             <span class="small fw-bold">{{course.title}}</span>
-                            <span class="small">{{getCoursePercentange(course.averageRating)}}%</span>
+                            <span class="small">{{getCoursePercentange(course.averageRating.$numberDecimal??0)}}%</span>
                         </div>
                         <div class="completion-bar"><div class="completion-fill" style="width: 92%" [ngStyle]="{'width': `${getCoursePercentange(course.averageRating)}%`}"></div></div>
                     </div>

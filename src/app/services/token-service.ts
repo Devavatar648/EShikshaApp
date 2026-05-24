@@ -1,10 +1,13 @@
 import { Injectable } from '@angular/core';
 import { jwtDecode } from 'jwt-decode';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TokenService {
+
+  eshikshaToken = "";
   
   decodeToken(token:string):any{
     try{
@@ -13,4 +16,6 @@ export class TokenService {
       return null;
     }
   }
+
+  
 }
