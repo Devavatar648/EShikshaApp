@@ -15,12 +15,7 @@ export class AssignmentService {
   apiServices = inject(ApiServices);
 
   selectedAssignment$ = new BehaviorSubject<Assignments | null>(null);
-
-  instructorCourses$ = new BehaviorSubject<Course[]>([]);
-
   selectedResult$ = new BehaviorSubject<AssignmentsResult | null>(null);
-
-
 
   addAssignments(formData: FormData, courseId: string) {
     return this.httpClient.post<{ result: any, message: string }>(

@@ -43,8 +43,8 @@ export class CourseCatalog {
 
 
   getCourses = (val?:string)=>{
-    this.courseService.getAllCourses(val).subscribe(res=>{
-      this.courseList.set(res.result);
+    this.courseService.getAllCourses(1,val).subscribe(res=>{
+      this.courseList.set(res.result.courses);
     })
   }
 

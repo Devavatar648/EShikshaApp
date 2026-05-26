@@ -2,12 +2,14 @@ import { inject } from '@angular/core';
 import { CanMatchFn, Router } from '@angular/router';
 import { TokenService } from '../services/token-service';
 import { UserService } from '../services/user-service';
+import { firstValueFrom } from 'rxjs';
 
 export const adminAuthGuard: CanMatchFn = async (route, segments) => {
-  const token = localStorage.getItem("eshikshaToken");
   const tokenService = inject(TokenService);
   const router = inject(Router);
   const userService = inject(UserService);
+
+  const token = tokenService.eshikshaToken;
 
   if(!token) return router.createUrlTree([""]);
 

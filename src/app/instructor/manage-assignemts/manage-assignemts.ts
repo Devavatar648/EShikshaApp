@@ -135,18 +135,15 @@ export class ManageAssignemts {
     }
 
     if (this.isEditMode && this.currentEditAssignmentId) {
-
-       if (this.assignmentForm.pristine && !this.selectedFile) {
-            this.toastService.info("User has not changed anything");
-            return;
-          }
-
+      if (this.assignmentForm.pristine && !this.selectedFile) {
+        this.toastService.info("No changes detected");
+        return;
+       }
       this.assignmentService.updateAssignments(formData, courseId, this.currentEditAssignmentId).subscribe({
         next: (res) => {
           this.toastService.success("Updated successfully");
           
           this.resetForm();
-          // Refresh the list
           this.assignmentForm.get('courseId')?.setValue(courseId);
         }
       });
@@ -173,7 +170,6 @@ export class ManageAssignemts {
 
     }
   }
-
 
   onDelete(id: string | undefined) {
     //console.log(id);

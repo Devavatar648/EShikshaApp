@@ -2,7 +2,7 @@
     <div class="row mb-4">
         <div class="col-md-8">
             <h3 class="fw-bold">My Enrolled Courses</h3>
-            <p class="text-muted">You have {{courseList()?.length||0}} active courses in your learning path.</p>
+            <p class="text-muted">You have {{courseList()?courseList().length:0}} active courses in your learning path.</p>
         </div>
         <div class="col-md-4 text-md-end d-flex align-items-center justify-content-md-end">
             <div class="btn-group shadow-sm">
@@ -44,7 +44,7 @@
                             @if(encourse.completePercentage!==100){
                                 <a class="btn btn-primary px-4" [routerLink]="`coursedetails/${encourse.course._id}`">Resume</a>
                             }@else{
-                                <a class="btn btn-primary px-4" routerLink="result"><i class="bi bi-award me-1"></i>Certificate</a>
+                                <span class="text-success">Completed</span>
                             }
                         </div>
                     </div>

@@ -45,19 +45,17 @@ export class CourseDetails {
   ngOnInit() {
     this.courseId1 = this.activatedRoute.snapshot.params['courseId'];
     let user;
-    if(localStorage.getItem("eshikshaToken")){
-      user = this.tokenService.decodeToken(localStorage.getItem("eshikshaToken")??"")
+    if(this.tokenService.eshikshaToken){
+      user = this.tokenService.decodeToken(this.tokenService.eshikshaToken)
     }
     this.courseService.getCourseById(this.courseId1, user?._id??'').subscribe(res => {
       this.selectedCourse.set(res.result);
-      // console.log(res.result);
     })
     if(user && user.role==="STUDENT"){
       this.assignmentService.getMarks(this.courseId1).subscribe(
         {
           next:(res)=>{
             this.marksArray.set(res.result);
-            // console.log(this.marksArray()); 
           },
           error:(err)=>{
               this.toastService.error("something went wrong");

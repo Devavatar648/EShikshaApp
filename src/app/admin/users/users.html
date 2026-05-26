@@ -1,15 +1,19 @@
 <div class="container-fluid p-4">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h4 class="fw-bold mb-0 text-dark">User Management</h4>
-        <button class="btn btn-primary shadow-sm btn-sm px-3">
-            <i class="bi bi-person-plus-fill me-2"></i>Add User
+        <button class="btn shadow-sm btn-sm px-3" [ngClass]="openInputRow()?'btn-danger':'btn-primary'" (click)="toggoleInputRow()">
+            @if(openInputRow()){
+                <i class="bi bi-x-lg me-2"></i>Cancel
+            }@else{
+                <i class="bi bi-person-plus-fill me-2"></i>Add Instructor
+            }
         </button>
     </div>
 
     <div class="card border-0 shadow-sm">
         <div class="card-header bg-white border-0 pt-4 px-4">
             <div class="row g-3">
-                <div class="col-12 col-md-6 col-lg-4">
+                <div class="col-12 col-md-6 col-lg-6">
                     <div class="input-group input-group-merge">
                         <span class="input-group-text bg-light border-0">
                             <i class="bi bi-search text-muted"></i>
@@ -17,7 +21,7 @@
                         <input type="text" class="form-control bg-light border-0 ps-0" placeholder="Search by name or email..." [formControl]="searchText">
                     </div>
                 </div>
-                <div class="col-12 col-md-auto ms-md-auto">
+                <div class="col-12 col-md-6 col-lg-4">
                     <div class="d-flex gap-2">
                         <select class="form-select border-light-subtle shadow-none" [(ngModel)]="selectedRole" (change)="filterUser()">
                             <option value="ALL" selected>All Roles</option>
@@ -29,11 +33,19 @@
                         </button>
                     </div>
                 </div>
+                <div class="col-12 col-md-6 col-lg-2 d-flex justify-content-end">
+                    <div>
+                        <button (click)="goToPreviousPage()"><i class="bi bi-arrow-left-short"></i></button>
+                        {{currentPage()}}
+                        <button (click)="goToNextPage()"><i class="bi bi-arrow-right-short"></i></button>
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="card-body p-0 mt-2">
             <div class="table-responsive">
+                <form [formGroup]="instructorData" (submit)="createInstructor()">
                 <table class="table table-hover align-middle mb-0">
                     <thead class="bg-light text-muted small text-uppercase">
                         <tr>
@@ -44,27 +56,48 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @for(user of users(); track $index){
+                        @if(openInputRow()){
+                                <tr>
+                                    <td class="ps-4">
+                                        <input type="text" formControlName="name">
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-soft px-3 text-primary">INSTRUCTOR</span>
+                                    </td>
+                                    <td class="text-muted">
+                                        <input type="text" formControlName="email">
+                                        @if(email?.touched && email?.hasError('pattern')){
+                                            <p class="text text-danger">Invalid email format</p>
+                                        }
+                                    </td>
+                                    <td class="text-end pe-4">
+                                        <button class="btn btn-success" [disabled]="this.instructorData.invalid">Save</button>
+                                    </td>
+                                </tr>
+                            }
+                        
+                        @for(user of users().users; track $index){
                             <tr>
                                 <td class="ps-4">
                                     <div class="d-flex align-items-center">
-                                        <img [src]="getAvtarUrl(user.name, user.role)" class="rounded-circle me-3" width="38" height="38">
+                                        <img [src]="getAvtarUrl(user.name, user?.role??'')" class="rounded-circle me-3" width="38" height="38">
                                         <span class="fw-semibold text-dark">
-                                            @if(setEditUser()===user._id){
-                                                <input type="text" [(ngModel)]="userValueForEdit.name">
-                                            }@else{
-                                                {{user.name}}
-                                            }
+                                            {{user.name}}
                                         </span>
                                     </div>
                                 </td>
-                                <td><span class="badge bg-primary-soft px-3" [ngClass]="user.role==='STUDENT'?'text-info':'text-primary'">{{user.role}}</span></td>
-                                <td class="text-muted">
-                                    @if(setEditUser()===user._id){
-                                        <input type="text" [(ngModel)]="userValueForEdit.email">
+                                <td>
+                                    @if(setEditUser()===user._id && user?.role){
+                                        <select name="role" id="role" [formControl]="updatedRole">
+                                            <option value="STUDENT" [selected]="user.role==='STUDENT'">Student</option>
+                                            <option value="INSTRUCTOR" [selected]="user.role==='INSTRUCTOR'">Instructor</option>
+                                        </select>
                                     }@else{
-                                        {{user.email}}
+                                        <span class="badge bg-primary-soft px-3" [ngClass]="user.role==='STUDENT'?'text-info':'text-primary'">{{user.role}}</span>
                                     }
+                                </td>
+                                <td class="text-muted">
+                                    {{user.email}}
                                 </td>
                                 <td class="text-end pe-4">
                                     <div class="btn-group">
@@ -76,6 +109,7 @@
                         }
                     </tbody>
                 </table>
+                </form>
             </div>
         </div>
     </div>

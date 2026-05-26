@@ -42,13 +42,12 @@ export class Login {
       .subscribe({
         next:(res)=>{
           if(res.result?.token){
-            localStorage.setItem("eshikshaToken", res.result.token);
+            this.tokenService.eshikshaToken = res.result.token;
             this.router.navigateByUrl("dashboard");
           }
         },
         error:(err)=>{
           this.toastService.error(err?.error?.message??"Some internal server error occure");
-          // console.log(err.error.message);
         }
       })
     }
