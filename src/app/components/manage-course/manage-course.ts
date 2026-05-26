@@ -57,7 +57,15 @@ export class ManageCourse {
   onSubmit() {
     console.log(this.courseForm.value);
     const {title,category,description ,imageUrl}=this.courseForm.value;
-
+    
+    if(this.isEditMode()){
+    //  console.log(this.courseForm.pristine);
+      if(this.courseForm.pristine){
+        this.toastService.info('No changes detected');
+        return;
+      }
+    }
+    
     const updatedData={
       title:title??"",
       category:category??"",
@@ -66,6 +74,8 @@ export class ManageCourse {
     }
     
     if(this.isEditMode()){
+      
+
       this.courseService.updateCourse(this.courseId, updatedData ).subscribe({
          next:res=>{
           console.log("this is result:");
@@ -129,6 +139,7 @@ export class ManageCourse {
   deleteCourse(id: string) {
     this.courseService.deleteCourse(id).subscribe({
       next:res=>{
+        alert("Do you want to delete");
         this.courseList.update(cArr=>cArr.filter(c=>c._id!==id))
         this.toastService.success(res.message);
       },

@@ -10,7 +10,7 @@ import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterModule,LowerCasePipe, Notification],
+  imports: [RouterModule,LowerCasePipe],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css',
 })

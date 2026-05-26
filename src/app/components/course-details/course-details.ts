@@ -52,18 +52,19 @@ export class CourseDetails {
       this.selectedCourse.set(res.result);
       // console.log(res.result);
     })
-
-    this.assignmentService.getMarks(this.courseId1).subscribe(
-      {
-        next:(res)=>{
-          this.marksArray.set(res.result);
-          // console.log(this.marksArray()); 
-        },
-        error:(err)=>{
-            this.toastService.error("something went wrong");
+    if(user && user.role==="STUDENT"){
+      this.assignmentService.getMarks(this.courseId1).subscribe(
+        {
+          next:(res)=>{
+            this.marksArray.set(res.result);
+            // console.log(this.marksArray()); 
+          },
+          error:(err)=>{
+              this.toastService.error("something went wrong");
+          }
         }
-      }
-    )
+      )
+    }
   }
 
   enroll() {
@@ -113,7 +114,7 @@ export class CourseDetails {
   }
 
   startQuiz(quizId:string){
-    if(confirm("Are you want to start this quiz?")){
+    if(confirm("Do you want to start this quiz?")){
       this.router.navigate(["/coursedetails", this.courseId1, 'quiz', quizId]);
     }
   }

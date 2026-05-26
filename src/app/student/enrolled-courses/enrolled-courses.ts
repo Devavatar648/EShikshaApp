@@ -24,6 +24,7 @@ export class EnrolledCourses {
 
   ngOnInit(): void {
     this.courseService.studentCourses$.subscribe(res => {
+      
       if (!res) {
         this.courseService.getEnrolledCourse().subscribe({
           next: courseResult => {

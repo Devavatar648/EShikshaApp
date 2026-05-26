@@ -115,6 +115,7 @@ export class ManageAssignemts {
       totalMarks: assignment.totalMarks
 
     });
+    this.assignmentForm.markAsPristine();
   }
 
   //================================================================================
@@ -134,9 +135,16 @@ export class ManageAssignemts {
     }
 
     if (this.isEditMode && this.currentEditAssignmentId) {
+
+       if (this.assignmentForm.pristine && !this.selectedFile) {
+            this.toastService.info("User has not changed anything");
+            return;
+          }
+
       this.assignmentService.updateAssignments(formData, courseId, this.currentEditAssignmentId).subscribe({
         next: (res) => {
           this.toastService.success("Updated successfully");
+          
           this.resetForm();
           // Refresh the list
           this.assignmentForm.get('courseId')?.setValue(courseId);
@@ -167,17 +175,6 @@ export class ManageAssignemts {
   }
 
 
-  // Deletes an assignment from the local state
-  // onDelete(id: number | undefined) {
-  //   if (id && confirm('Are you sure you want to delete this assessment?')) {
-  //     this.publishedAssignments = this.publishedAssignments.filter(a => a.id !== id);
-
-  //     if (this.currentEditId === id) {
-  //       this.resetForm();
-  //     }
-  //   }
-  // }
-
   onDelete(id: string | undefined) {
     //console.log(id);
     const courseId = this.assignmentForm.get('courseId')?.value;
@@ -200,10 +197,14 @@ export class ManageAssignemts {
   }
 
   resetForm() {
+
+    const courseId = this.assignmentForm.get('courseId')?.value;
+
     this.isEditMode = false;
     this.currentEditAssignmentId = null;
     this.selectedFile = null;
-    //this.assignmentForm.reset();
+    this.assignmentForm.reset({ courseId });
+
   }
 
 
@@ -311,7 +312,9 @@ export class ManageAssignemts {
 
   viewResponse(assignment: any) {
     this.viewResponses = !this.viewResponses;
+
     console.log(assignment);
+
     this.assignmentService.searchResult(assignment.course, assignment._id).subscribe(
       {
         next: (result) => {

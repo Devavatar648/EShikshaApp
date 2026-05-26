@@ -18,7 +18,7 @@ export class Login {
   // custom services
   private userService = inject(UserService);
   private loadingService = inject(LoadingService);
-  private tokenService = inject(TokenService);
+  //private tokenService = inject(TokenService);
   
   // external services
   private formBuilder = inject(FormBuilder);
@@ -32,6 +32,7 @@ export class Login {
   
   login(){
     this.loadingService.isLoading$.next(true);
+    console.log(this.loginForm.value)
     const {email, password} = this.loginForm.value;
     if(email && password){
       this.userService.login(new AuthUser(email, password))

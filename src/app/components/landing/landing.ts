@@ -5,7 +5,7 @@ import { CourseCard } from '../course-card/course-card';
 import { CommonModule } from '@angular/common';
 import { CourseService } from '../../services/course-service';
 import { Course } from '../../models/course';
-import { debounce, debounceTime } from 'rxjs';
+import { debounce, debounceTime, distinctUntilChanged, exhaustMap, mergeMap, switchMap } from 'rxjs';
 import { LoadingService } from '../../services/loading-service';
 
 @Component({
@@ -32,16 +32,40 @@ export class Landing {
       this.loadingService.isLoading$.next(false);
     })
     
+    // this.searchCourse.valueChanges.pipe(
+    //   debounceTime(300)
+    // ).subscribe(res=>{
+    //     this.loadingService.isLoading$.next(true);
+    //     console.log(res);
+    //     this.courseServices.getAllCourses(res??'').subscribe(response=>{
+    //     this.courses.set(response.result);
+    //     this.loadingService.isLoading$.next(false);
+    //   })
+    // })
+
+
     this.searchCourse.valueChanges.pipe(
-      debounceTime(300)
-    ).subscribe(res=>{
-      this.loadingService.isLoading$.next(true);
-      console.log(res);
-        this.courseServices.getAllCourses(res??'').subscribe(response=>{
-        this.courses.set(response.result);
-        this.loadingService.isLoading$.next(false);
+      
+      // debounceTime(1000),
+      distinctUntilChanged(),
+      
+      switchMap(res=>{
+        console.log(res);
+        this.loadingService.isLoading$.next(true);
+        return this.courseServices.getAllCourses(res??'');
       })
-    })
+
+    ).subscribe(
+      {
+        next:(res)=>{
+              this.courses.set(res.result);
+              this.loadingService.isLoading$.next(false);
+        },
+        error:(err)=>{
+           this.loadingService.isLoading$.next(false);
+        }
+      }
+    )
   }
   
   // Partnars came form api
