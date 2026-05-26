@@ -44,8 +44,11 @@
                     </div>
                     <hr>
                     <div>
-                        <p class="text-muted"><i class="bi bi-star-fill text-warning"></i> Highest Rating</p>
-                        <span>{{dashboardData()?.courseDetails.topCourses[0].averageRating.$numberDecimal}}</span>
+                        <p class="text-muted"><i class="bi bi-star-fill text-warning"></i> Highest Rated Course</p>
+                        <div>
+                            <span class="text-muted me-2">{{dashboardData()?.courseDetails.topCourses[0].averageRating.$numberDecimal}}</span>
+                            <span>{{dashboardData()?.courseDetails.topCourses[0].title}}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -55,7 +58,7 @@
             <div class="col-lg-8">
                 <div class="card shadow-sm h-100">
                     <div class="card-header d-flex justify-content-between align-items-center">
-                        <span>Joining Velocity</span>
+                        <span>Last 5 month joining velocity</span>
                         <i class="fa-solid fa-ellipsis-vertical text-muted cursor-pointer"></i>
                     </div>
                     <div class="card-body">

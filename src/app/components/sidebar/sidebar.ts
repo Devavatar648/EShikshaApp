@@ -24,7 +24,6 @@ export class Sidebar {
 
   navElements = input<string[]>();
   activeUser!:User;
-  showNotificaitonBox = signal<boolean>(false);
 
   ngOnInit(){
     this.userService.activeUser$.subscribe(res=>{
@@ -38,7 +37,6 @@ export class Sidebar {
   }
 
   logout(){
-    
     this.loadingService.isLoading$.next(true);
     this.userService.logout().pipe(
       finalize(()=>this.loadingService.isLoading$.next(false))
@@ -52,13 +50,7 @@ export class Sidebar {
           this.toastService.error("problem during logout")
          }
     }
-      
     )
-    
-  }
-
-  openNotificaionBox(){
-    this.showNotificaitonBox.set(!this.showNotificaitonBox());
   }
 
 }

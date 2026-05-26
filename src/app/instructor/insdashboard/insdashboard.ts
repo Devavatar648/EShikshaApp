@@ -27,7 +27,7 @@ export class Insdashboard {
     },
     scales: {
       y: { display: false },
-      x: { grid: { display: false } }
+      x: { display: false }
     }
   };
 

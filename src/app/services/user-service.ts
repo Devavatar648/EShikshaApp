@@ -25,13 +25,13 @@ export class UserService {
     return this.httpClient.post<{result:any, message:string|string[]}>(this.apiServices.getFullUrl("auth/register"), user);
   }
 
-  getUsers(role?:string,searchVal?:string, pageNumber?:number):Observable<{result:{users:User[], totalUsers:number}, success:boolean, message:string, errors:any[]}>{
+  getUsers(role?:string,searchVal?:string, pageNumber?:number):Observable<{result:{users:User[], totalUsers:number}, message:string}>{
     let params = new HttpParams();
 
     if (role && role !== 'ALL') params = params.append('role', role);
     if (searchVal && searchVal.trim() !== '') params = params.append('searchVal', searchVal);
     if(pageNumber) params = params.append('pageNumber', pageNumber)
-    return this.httpClient.get<{result:{users:User[], totalUsers:number}, success:boolean, message:string, errors:any[]}>(this.apiServices.getFullUrl(`admin/users`),{params})
+    return this.httpClient.get<{result:{users:User[], totalUsers:number}, message:string}>(this.apiServices.getFullUrl(`admin/users`),{params})
   }
 
   updateUser(userId:string, role?:string):Observable<{result:null, message:string}>{

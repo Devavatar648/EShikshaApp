@@ -79,6 +79,7 @@ export class Users {
       this.userService.updateUser(user._id, this.updatedRole.value??'').subscribe({
         next:res=>{
           this.updateUserTableData(user, 'update', ind);
+          this.setEditUser.set('');
           this.toastService.success(res.message);
         },
         error:err=>{
@@ -112,6 +113,7 @@ export class Users {
       this.users.set({users:this.users().users.filter(u=>u._id!==user._id), totalUsers:this.users().totalUsers-1});
     }else if(action==='update' && ind){
       const updatedUser = {...user, role:this.updatedRole.value??user.role};
+      debugger;
       this.users.update(usersData=>{
         return {
           ...usersData,

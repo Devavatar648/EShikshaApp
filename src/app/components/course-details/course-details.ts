@@ -52,16 +52,18 @@ export class CourseDetails {
       this.selectedCourse.set(res.result);
     })
 
-    this.assignmentService.getMarks(this.courseId1).subscribe(
-      {
-        next:(res)=>{
-          this.marksArray.set(res.result);
-        },
-        error:(err)=>{
-            this.toastService.error("something went wrong");
+    if(user && user.role==="STUDENT"){
+      this.assignmentService.getMarks(this.courseId1).subscribe(
+        {
+          next:(res)=>{
+            this.marksArray.set(res.result);
+          },
+          error:(err)=>{
+              this.toastService.error("something went wrong");
+          }
         }
-      }
-    )
+      )
+    }
   }
 
   enroll() {

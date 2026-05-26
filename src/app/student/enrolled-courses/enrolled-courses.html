@@ -44,7 +44,7 @@
                             @if(encourse.completePercentage!==100){
                                 <a class="btn btn-primary px-4" [routerLink]="`coursedetails/${encourse.course._id}`">Resume</a>
                             }@else{
-                                <a class="btn btn-primary px-4" routerLink="result"><i class="bi bi-award me-1"></i>Certificate</a>
+                                <span class="text-success">Completed</span>
                             }
                         </div>
                     </div>

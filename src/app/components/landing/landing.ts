@@ -5,7 +5,7 @@ import { CourseCard } from '../course-card/course-card';
 import { CommonModule } from '@angular/common';
 import { CourseService } from '../../services/course-service';
 import { Course } from '../../models/course';
-import { debounce, debounceTime } from 'rxjs';
+import { debounceTime } from 'rxjs';
 import { LoadingService } from '../../services/loading-service';
 
 @Component({
@@ -28,7 +28,7 @@ export class Landing {
     this.loadingService.isLoading$.next(true);
     
     this.courseServices.getAllCourses().subscribe(res=>{
-      this.courses.set(res.result);
+      this.courses.set(res.result.courses);
       this.loadingService.isLoading$.next(false);
     })
     
@@ -37,8 +37,8 @@ export class Landing {
     ).subscribe(res=>{
       this.loadingService.isLoading$.next(true);
       console.log(res);
-        this.courseServices.getAllCourses(res??'').subscribe(response=>{
-        this.courses.set(response.result);
+        this.courseServices.getAllCourses(1,res??'').subscribe(response=>{
+        this.courses.set(response.result.courses);
         this.loadingService.isLoading$.next(false);
       })
     })

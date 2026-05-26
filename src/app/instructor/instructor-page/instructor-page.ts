@@ -13,8 +13,7 @@ export class InstructorPage {
   currentUser!:User;
   userService = inject(UserService);
 
-
-  navElements = ["Dashboard", "Manage Course", "Quizes", "Assignments", "Student Progress", "Announcements","Chat-Box"," community-Forum" ,"Settings"];
+  navElements = ["Dashboard", "Manage Course", "Quizes", "Assignments", "Student Progress", "Announcements","Chat-Box", "Settings"];
 
   ngOnInit(){
     this.userService.activeUser$.subscribe(res=>{

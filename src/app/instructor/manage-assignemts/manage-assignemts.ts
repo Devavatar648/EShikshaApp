@@ -115,6 +115,7 @@ export class ManageAssignemts {
       totalMarks: assignment.totalMarks
 
     });
+    this.assignmentForm.markAsPristine();
   }
 
   //================================================================================
@@ -134,11 +135,14 @@ export class ManageAssignemts {
     }
 
     if (this.isEditMode && this.currentEditAssignmentId) {
+      if (this.assignmentForm.pristine && !this.selectedFile) {
+        this.toastService.info("No changes detected");
+        return;
+       }
       this.assignmentService.updateAssignments(formData, courseId, this.currentEditAssignmentId).subscribe({
         next: (res) => {
           this.toastService.success("Updated successfully");
           this.resetForm();
-          // Refresh the list
           this.assignmentForm.get('courseId')?.setValue(courseId);
         }
       });
@@ -165,18 +169,6 @@ export class ManageAssignemts {
 
     }
   }
-
-
-  // Deletes an assignment from the local state
-  // onDelete(id: number | undefined) {
-  //   if (id && confirm('Are you sure you want to delete this assessment?')) {
-  //     this.publishedAssignments = this.publishedAssignments.filter(a => a.id !== id);
-
-  //     if (this.currentEditId === id) {
-  //       this.resetForm();
-  //     }
-  //   }
-  // }
 
   onDelete(id: string | undefined) {
     //console.log(id);
