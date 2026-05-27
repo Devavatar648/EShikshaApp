@@ -18,7 +18,7 @@ export class Login {
   // custom services
   private userService = inject(UserService);
   private loadingService = inject(LoadingService);
-  //private tokenService = inject(TokenService);
+  private tokenService = inject(TokenService);
   
   // external services
   private formBuilder = inject(FormBuilder);

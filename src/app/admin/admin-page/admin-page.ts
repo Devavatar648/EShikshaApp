@@ -1,6 +1,4 @@
-import { Component, inject } from '@angular/core';
-import { User } from '../../models/user';
-import { UserService } from '../../services/user-service';
+import { Component } from '@angular/core';
 import { Sidebar } from '../../components/sidebar/sidebar';
 
 @Component({
@@ -10,17 +8,5 @@ import { Sidebar } from '../../components/sidebar/sidebar';
   styleUrl: './admin-page.css',
 })
 export class AdminPage {
-  currentUser!:User;
-  userService = inject(UserService);
-
-
   navElements = ["Dashboard", "Manage Users", "Course Catalog", "Settings"];
-
-  ngOnInit(){
-    this.userService.activeUser$.subscribe(res=>{
-      if(res instanceof User){
-        this.currentUser = res;
-      }
-    })
-  }
 }

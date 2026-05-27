@@ -1,4 +1,4 @@
-import { Component, inject, input, signal } from '@angular/core';
+import { Component, inject, input} from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { UserService } from '../../services/user-service';
 import { User } from '../../models/user';
