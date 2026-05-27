@@ -32,6 +32,7 @@ export class Login {
   
   login(){
     this.loadingService.isLoading$.next(true);
+    console.log(this.loginForm.value)
     const {email, password} = this.loginForm.value;
     if(email && password){
       this.userService.login(new AuthUser(email, password))

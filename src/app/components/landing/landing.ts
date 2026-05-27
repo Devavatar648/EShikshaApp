@@ -32,16 +32,29 @@ export class Landing {
       this.loadingService.isLoading$.next(false);
     })
     
+    // this.searchCourse.valueChanges.pipe(
+    //   debounceTime(300)
+    // ).subscribe(res=>{
+    //     this.loadingService.isLoading$.next(true);
+    //     console.log(res);
+    //     this.courseServices.getAllCourses(res??'').subscribe(response=>{
+    //     this.courses.set(response.result);
+    //     this.loadingService.isLoading$.next(false);
+    //   })
+    // })
+
+
     this.searchCourse.valueChanges.pipe(
       debounceTime(300)
     ).subscribe(res=>{
       this.loadingService.isLoading$.next(true);
       console.log(res);
         this.courseServices.getAllCourses(1,res??'').subscribe(response=>{
-        this.courses.set(response.result.courses);
-        this.loadingService.isLoading$.next(false);
-      })
-    })
+          this.courses.set(response.result.courses);
+          this.loadingService.isLoading$.next(false);
+        })
+      }
+    )
   }
   
   // Partnars came form api

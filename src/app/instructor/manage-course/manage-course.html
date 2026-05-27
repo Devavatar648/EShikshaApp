@@ -3,8 +3,8 @@
 
     <div class="col-lg-7">
       <div class="card shadow-sm border-0">
-        <div class="card-header bg-white py-3 border-bottom">
-          <h4 class="mb-0 fw-bold text-dark">{{ isEditMode() ? 'Update' : 'Create' }} Course</h4>
+        <div class="card-header bg-success py-3 border-bottom">
+          <h4 class="mb-0 fw-bold text-white">{{ isEditMode() ? 'Update' : 'Create' }} Course</h4>
         </div>
         <div class="card-body p-4">
           <form [formGroup]="courseForm" (ngSubmit)="onSubmit()">

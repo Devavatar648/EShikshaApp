@@ -51,7 +51,6 @@ export class CourseDetails {
     this.courseService.getCourseById(this.courseId1, user?._id??'').subscribe(res => {
       this.selectedCourse.set(res.result);
     })
-
     if(user && user.role==="STUDENT"){
       this.assignmentService.getMarks(this.courseId1).subscribe(
         {
@@ -113,7 +112,7 @@ export class CourseDetails {
   }
 
   startQuiz(quizId:string){
-    if(confirm("Are you want to start this quiz?")){
+    if(confirm("Do you want to start this quiz?")){
       this.router.navigate(["/coursedetails", this.courseId1, 'quiz', quizId]);
     }
   }

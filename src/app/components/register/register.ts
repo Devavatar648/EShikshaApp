@@ -36,7 +36,6 @@ export class Register {
     confirmPassword: ["", [Validators.required]]
   },
     {
-      // APPLY THE VALIDATOR HERE
       validators: this.regFormValidator.passwordMatchValidator
     })
 

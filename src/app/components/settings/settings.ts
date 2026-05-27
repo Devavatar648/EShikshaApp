@@ -8,7 +8,7 @@ import { KeyValuePipe } from '@angular/common';
 
 @Component({
   selector: 'app-settings',
-  imports: [FormsModule, ReactiveFormsModule, KeyValuePipe],
+  imports: [FormsModule, ReactiveFormsModule],
   templateUrl: './settings.html',
   styleUrl: './settings.css',
 })

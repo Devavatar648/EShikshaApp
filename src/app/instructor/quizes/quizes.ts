@@ -43,11 +43,15 @@ export class Quizes {
   initForm() {
     this.quizForm = this.fb.group({
       courseId: ['', Validators.required],
-      title: ['', Validators.required],
+      title: ['', [Validators.required,Validators.minLength(5)]],
       markPerQuestion: [null, [Validators.required, Validators.min(1)]],
       timeLimit: [null, [Validators.required, Validators.min(1)]],
       questions: this.fb.array([])
     });
+  }
+
+  get title(){
+    return this.quizForm.get('title');
   }
 
   get questions() {

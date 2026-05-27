@@ -1,7 +1,8 @@
 import { Routes } from "@angular/router";
+import { authGuard } from "../routeGards/auth-guard";
 
 export const adminRoutes : Routes = [
-    {path:"", loadComponent:()=>import("./admin-page/admin-page").then(r=>r.AdminPage), children:[
+    {path:"", loadComponent:()=>import("./admin-page/admin-page").then(r=>r.AdminPage),children:[
         {path:"", redirectTo:"admin", pathMatch:'full'},
         {path:"admin",loadComponent:()=>import("./admindashboard/admindashboard").then(r=>r.Admindashboard)},
         {path:"manageusers", loadComponent:()=>import("./users/users").then(r=>r.Users)},

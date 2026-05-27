@@ -15,7 +15,7 @@ export const adminAuthGuard: CanMatchFn = async (route, segments) => {
 
   const data = tokenService.decodeToken(token);
 
-  const isSettingsSet = await new Promise((resolve, reject)=>{
+    const isSettingsSet = await new Promise((resolve, reject)=>{
     userService.getUserSettings().subscribe({
       next:res=>{
         userService.activeUser$.next({...res.result,_id:data._id});
@@ -32,7 +32,24 @@ export const adminAuthGuard: CanMatchFn = async (route, segments) => {
   if(data && data.role==="ADMIN"){
     return true;
   }
+
   return false;
+
+  // const router = inject(Router);
+  // const userService=inject(UserService);
+  // let logged=false;
+
+  // userService.loggedUser$.subscribe({
+  //   next:(res)=>{
+  //     logged=res;
+  //   }
+  // })
+
+  // if (logged) {
+  //   return true;  
+  // } else {
+  //   return router.createUrlTree(['login']); 
+  // }
 
 };
 

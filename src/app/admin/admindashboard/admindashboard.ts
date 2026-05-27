@@ -17,12 +17,13 @@ export class Admindashboard {
 
   dashboardData = signal<any>('');
   currentDate = new Date();
+  
   lineChartDataSets = [
     {
       data: [0, 0, 0, 0, 0],
       label: 'INSTRUCTOR',
       fill: true,
-      tension: 0.5,
+      tension: 1,
       borderColor: 'rgba(75,192,192,1)',
       backgroundColor: 'rgba(75,192,192,0.2)'
     },
@@ -33,6 +34,7 @@ export class Admindashboard {
       backgroundColor:'rgba(255,99,132,0.2)'
     }
   ]
+  
   monthLabels:number[]=[];
   showChart = signal<boolean>(false);
 
