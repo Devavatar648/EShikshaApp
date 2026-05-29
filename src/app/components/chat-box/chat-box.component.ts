@@ -1,12 +1,13 @@
-import { Component, inject, signal } from '@angular/core'; 
-import { CommonModule } from '@angular/common'; 
-import { FormsModule } from '@angular/forms';     
-import { ChatData } from '../../models/chatModel';
-import { UserService } from '../../services/user-service';
-import { ChatService } from '../../services/chat-service';
+import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { finalize } from 'rxjs';
+import { ChatData } from '../../models/chatModel';
+import { ChatService } from '../../services/chat-service';
 import { LoadingService } from '../../services/loading-service';
+import { UserService } from '../../services/user-service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-chat-box',
@@ -68,6 +69,7 @@ export class ChatBoxComponent {
     this.messages.update(marr=>[...marr, new ChatData('user', [{text:this.userPrompt}])]);
     this.chatService.getChatResponse(this.messages())
     .pipe(
+      takeUntilDestroyed(),
       finalize(()=>this.isLoading.set(false))
     )
     .subscribe({

@@ -1,7 +1,9 @@
-import { Component, inject, signal } from '@angular/core';
-import { CourseService } from '../../services/course-service';
-import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { Component, inject, signal } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
+import { finalize } from 'rxjs';
+import { CourseService } from '../../services/course-service';
+import { LoadingService } from '../../services/loading-service';
 
 @Component({
   selector: 'app-student-progress',
@@ -10,7 +12,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './student-progress.css',
 })
 export class StudentProgress {
-  courseService = inject(CourseService);
+  private courseService = inject(CourseService);
+  private loadinService = inject(LoadingService);
+  private toastService = inject(ToastrService);
   
   instructorCourses = signal<{ id: string, title: string, category:string }[]>([]);
   studentsProgressData = signal<any|null>(null);
@@ -26,14 +30,18 @@ export class StudentProgress {
 
 
   onCourseChange(event:any){
-    console.log(event.target.value);
-    this.courseService.getStudentsCourseReport(event.target.value).subscribe({
+    this.loadinService.isLoading$.next(true);
+    this.courseService.getStudentsCourseReport(event.target.value)
+    .pipe(
+      finalize(()=>this.loadinService.isLoading$.next(false))
+    )
+    .subscribe({
       next:res=>{
         this.studentsProgressData.set(res.result);
         console.log(res.result);
       },
-      error:err=>{
-        console.log(err);
+      error:_=>{
+        this.toastService.error("Error while loading student progress.")
       }
     })
   }

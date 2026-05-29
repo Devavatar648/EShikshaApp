@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CourseService } from '../../services/course-service';
-import { Observable } from 'rxjs';
+import { finalize, Observable } from 'rxjs';
 import { Course } from '../../models/course';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user-service';
 import { ToastrService } from 'ngx-toastr';
 import { EnrolledCourse } from '../../models/enrolledCourse';
+import { LoadingService } from '../../services/loading-service';
 
 @Component({
   selector: 'app-enrolled-courses',
@@ -15,18 +16,22 @@ import { EnrolledCourse } from '../../models/enrolledCourse';
   styleUrl: './enrolled-courses.css',
 })
 export class EnrolledCourses {
-  userService = inject(UserService);
-  courseService = inject(CourseService);
-  toastService = inject(ToastrService);
+  private courseService = inject(CourseService);
+  private toastService = inject(ToastrService);
+  private loadingService = inject(LoadingService);
 
   courseList = signal<EnrolledCourse[]>([]);
   activeTab:string = 'all';
 
   ngOnInit(): void {
     this.courseService.studentCourses$.subscribe(res => {
-      
       if (!res) {
-        this.courseService.getEnrolledCourse().subscribe({
+        this.loadingService.isLoading$.next(true);
+        this.courseService.getEnrolledCourse()
+        .pipe(
+          finalize(()=>this.loadingService.isLoading$.next(false))
+        )
+        .subscribe({
           next: courseResult => {
             this.courseService.studentCourses$.next(courseResult.result);
             this.courseList.set(courseResult.result)

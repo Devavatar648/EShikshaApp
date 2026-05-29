@@ -84,8 +84,8 @@ export class Announcements implements OnInit {
           next:res=>{
             this.notifications.set(res.result);
           },
-          error:err=>{
-            console.log(err);
+          error:_=>{
+            this.toastService.error("Error while loading announcements.");
           }
         })
       }
@@ -100,16 +100,18 @@ export class Announcements implements OnInit {
 
   postAnnouncement() {
     if (this.announcementForm.invalid) return;
-
-    this.annnouncementService.postAnnouncement(this.announcementForm.value.courseId, {message:this.announcementForm.value.messageText}).subscribe({
+    this.loadingService.isLoading$.next(true);
+    this.annnouncementService.postAnnouncement(this.announcementForm.value.courseId, {message:this.announcementForm.value.messageText})
+    .pipe(
+      finalize(()=>this.loadingService.isLoading$.next(false))
+    )
+    .subscribe({
       next: (res) => {
-        console.log(res);
         this.announcementForm.reset({ courseId: '', messageText: '' });
         this.notifications.set([res.result, ...this.notifications()??[]])
         this.toastService.success("Announcement broadcasted successfully!");
       },
       error: (err) => {
-        console.error('Failed to post announcement', err);
         this.toastService.error(err.error?.message || "Failed to post announcement");
       }
     })

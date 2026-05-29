@@ -17,11 +17,11 @@ import { CourseService } from '../../services/course-service';
 })
 export class Sidebar {
 
-  router = inject(Router);
-  userService = inject(UserService);
-  toastService=inject(ToastrService);
-  loadingService=inject(LoadingService);
-  tokenService = inject(TokenService);
+  private router = inject(Router);
+  private userService = inject(UserService);
+  private toastService=inject(ToastrService);
+  private loadingService=inject(LoadingService);
+  private tokenService = inject(TokenService);
   private courseService = inject(CourseService);
 
   navElements = input<string[]>();

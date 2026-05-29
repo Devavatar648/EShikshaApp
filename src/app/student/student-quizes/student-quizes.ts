@@ -98,8 +98,6 @@ export class StudentQuizes {
             if(c.course._id===this.courseId)return {...c, attendedQuizes:[...new Set([...c.attendedQuizes,this.quizId])]};
             return c;
           }))
-          debugger;
-          console.log(this.courseService.studentCourses$.getValue());
         }
         this.toastService.success(res.message);
       },

@@ -14,12 +14,9 @@ import { CourseService } from '../../services/course-service';
   styleUrl: './student-assignment.css',
 })
 export class StudentAssignment {
-
-
   private activatedRoutes = inject(ActivatedRoute);
   private toastService = inject(ToastrService);
   private assignmentService = inject(AssignmentService);
-  private courseService = inject(CourseService);
 
 
   courseId!: string;

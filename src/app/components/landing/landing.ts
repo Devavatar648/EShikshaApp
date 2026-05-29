@@ -17,9 +17,9 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class Landing {
 
-  courseServices = inject(CourseService);
-  loadingService = inject(LoadingService);
-  toastService = inject(ToastrService);
+  private courseServices = inject(CourseService);
+  private loadingService = inject(LoadingService);
+  private toastService = inject(ToastrService);
 
   searchCourse = new FormControl('');
   //courses came from api
