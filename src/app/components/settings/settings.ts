@@ -3,7 +3,10 @@ import { UserService } from '../../services/user-service';
 import { User } from '../../models/user';
 import { FormBuilder, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-
+import { RegisterFormValidator } from '../../validators/register-form-validator';
+import { KeyValuePipe } from '@angular/common';
+import { LoadingService } from '../../services/loading-service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-settings',
@@ -15,6 +18,7 @@ export class Settings {
   private userService = inject(UserService);
   private toastService = inject(ToastrService);
   private formBuilder = inject(FormBuilder);
+  private loadingService = inject(LoadingService);
 
   activeUser!: User;
   settingsForm = this.formBuilder.group({
@@ -30,11 +34,9 @@ export class Settings {
     })
   }
 
-  updateProfile() {
-    if (!this.settingsForm.valid || !this.settingsForm.dirty) {
-      this.toastService.info("No Changes")
-      return
-    };
+  updateProfile(){
+    if(!this.settingsForm.valid || !this.settingsForm.dirty) return;
+    const {name, email }=this.settingsForm.value;
 
     const { name, email } = this.settingsForm.value;
 
@@ -46,9 +48,15 @@ export class Settings {
     if (email && this.activeUser.email !== email) {
       updatedData['email'] = email;
     }
-    if(confirm("Do you want to change ?")){
-       this.userService.updateUserSettings(updatedData).subscribe({
-      next: res => {
+
+  if(confirm("Do you want to change ?")){
+    this.loadingService.isLoading$.next(true);
+    this.userService.updateUserSettings(updatedData)
+    .pipe(
+      finalize(()=>this.loadingService.isLoading$.next(false))
+    )
+    .subscribe({
+      next:res=>{
         this.toastService.success(res.message);
       },
       error: err => {

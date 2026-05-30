@@ -7,9 +7,10 @@ import { CommonModule} from '@angular/common';
 import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user-service';
-import { combineLatest, map, Observable } from 'rxjs';
+import { combineLatest, finalize, map, Observable } from 'rxjs';
 import { TokenService } from '../../services/token-service';
 import { FormsModule } from '@angular/forms';
+import { LoadingService } from '../../services/loading-service';
 
 @Component({
   selector: 'app-course-details',
@@ -27,6 +28,7 @@ export class CourseDetails {
 
   private router = inject(Router);
   private tokenService = inject(TokenService);
+  private loadinService = inject(LoadingService);
 
   courseId1!: string;
   selectedCourse = signal<{ course: Course, assignments: Assignments[], quizzes:any[], totalEnrollments:number, isEnrolled:boolean } | null>(null);
@@ -37,11 +39,11 @@ export class CourseDetails {
 
   setRating(ratingValue: number) {
     this.currentRating.set(ratingValue);
-    console.log('Captured rating:', this.currentRating());
   }
+
   reviewText = signal<string>('');
 
-  marksArray=signal<{[key:string]:number}|null>(null);
+  marksArray=signal<{quizResults:{[key:string]:any[]}, assignmentResults:{[key:string]:number}}|null>(null);
 
   ngOnInit() {
     this.courseId1 = this.activatedRoute.snapshot.params['courseId'];
@@ -49,16 +51,21 @@ export class CourseDetails {
     if(this.tokenService.eshikshaToken){
       user = this.tokenService.decodeToken(this.tokenService.eshikshaToken)
     }
-    this.courseService.getCourseById(this.courseId1, user?._id??'').subscribe(res => {
-      this.selectedCourse.set(res.result);
+    this.courseService.getCourseById(this.courseId1, user?._id??'').subscribe({
+      next: res=>{
+        this.selectedCourse.set(res.result);
+      },
+      error: _=>{
+        this.toastService.error("Error While loading course details");
+      }
     })
     if(user && user.role==="STUDENT"){
-      this.assignmentService.getMarks(this.courseId1).subscribe(
+      this.courseService.getAllResults(this.courseId1).subscribe(
         {
           next:(res)=>{
             this.marksArray.set(res.result);
           },
-          error:(err)=>{
+          error:(_)=>{
               this.toastService.error("something went wrong");
           }
         }
@@ -139,7 +146,12 @@ export class CourseDetails {
       this.toastService.warning("correctly fill rating and feedback");
       return;
     }
-    this.courseService.submitRating(this.courseId1, {name:this.userName, rating:this.selectedRating, feedback:this.feedback}).subscribe({
+    this.loadinService.isLoading$.next(true);
+    this.courseService.submitRating(this.courseId1, {name:this.userName, rating:this.selectedRating, feedback:this.feedback})
+    .pipe(
+      finalize(()=>this.loadinService.isLoading$.next(false))
+    )
+    .subscribe({
       next:res=>{
         this.selectedCourse.update(c=>{
           if(!c) return null;
@@ -148,7 +160,7 @@ export class CourseDetails {
         this.toastService.success(res.message);
       },
       error:err=>{
-        this.toastService.error(err.error.message??"Internal server error");
+        this.toastService.error(err.error.message??"Error while posting review");
       }
     })
   }

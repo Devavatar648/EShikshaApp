@@ -36,7 +36,7 @@ export class CourseCatalog {
 
 
   getCourses = (val?:string)=>{
-    this.loadingService.isLoading$.next(true);
+    this.loadingService.isLoading$.next(true)
     this.courseService.getAllCourses(1,val)
     .pipe(
       finalize(()=>this.loadingService.isLoading$.next(false))

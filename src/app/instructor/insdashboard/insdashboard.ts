@@ -5,6 +5,9 @@ import { BaseChartDirective } from 'ng2-charts';
 import { CourseService } from '../../services/course-service';
 import { DashboardServices } from '../../services/dashboard-services';
 import { ToastrService } from 'ngx-toastr';
+import { RouterModule } from '@angular/router';
+import { LoadingService } from '../../services/loading-service';
+import { finalize } from 'rxjs';
 
 
 @Component({
@@ -18,6 +21,7 @@ export class Insdashboard {
   private courseService = inject(CourseService);
   private dashboardService = inject(DashboardServices);
   private toastService=inject(ToastrService);
+  private loadingService = inject(LoadingService);
 
   public lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -34,7 +38,12 @@ export class Insdashboard {
   dashboardData = signal<any>('');
 
   ngOnInit(){
-    this.dashboardService.getInstructorDashboard().subscribe({
+    this.loadingService.isLoading$.next(true);
+    this.dashboardService.getInstructorDashboard()
+    .pipe(
+      finalize(()=>this.loadingService.isLoading$.next(false))
+    )
+    .subscribe({
       next:res=>{
         this.dashboardData.set(res.result);
         this.courseService.instructorCoursesList$.next(res.result?.courses?.map((c:any)=>({id:c._id, title:c.title, category:c.category})))
