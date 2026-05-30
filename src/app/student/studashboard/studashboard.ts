@@ -14,50 +14,58 @@ export class Studashboard {
 
   dashboardData = signal<any>('');
 
-  ngOnInit(){
+  ngOnInit() {
     this.dasboardService.getStudentDashboard().subscribe({
-      next:res=>{
+      next: res => {
         this.dashboardData.set(res.result);
       },
-      error:err=>{
+      error: err => {
         console.log(err);
       }
     })
   }
 
-  getCourseCompletedCount(){
-    if(this.dashboardData()?.enrolledCourses?.length===0)return 0;
+  getCourseCompletedCount() {
+    if (this.dashboardData()?.enrolledCourses?.length === 0) return 0;
     let count = 0;
-    this.dashboardData()?.enrolledCourses?.forEach((ec:any)=>{
-      if(ec.totalAttended===ec.totalModule)count++;
+    this.dashboardData()?.enrolledCourses?.forEach((ec: any) => {
+      if (ec.totalAttended === ec.totalModule) count++;
     })
     return count;
   }
 
-  getAverageQuizMarks(){
-    if(this.dashboardData()?.quizResult?.length===0)return 0;
+  getAverageQuizMarks() {
+    if (this.dashboardData()?.quizResult?.length === 0) return 0;
     let obtainMarks = 0;
     let totalMarks = 0;
-    this.dashboardData()?.quizResult.forEach((q:any)=>{
-      obtainMarks+=q.obtainMarks;
-      totalMarks+=q.quiz.totalMarks;
+    this.dashboardData()?.quizResult.forEach((q: any) => {
+      obtainMarks += q.obtainMarks;
+      totalMarks += q.quiz.totalMarks;
     })
-    return ((obtainMarks/totalMarks)*100).toFixed(2);
+    return ((obtainMarks / totalMarks) * 100).toFixed(2);
   }
 
-  getEnrolledCourses(){
-    return  this.dashboardData()?.enrolledCourses?.slice(0,3);
+  getEnrolledCourses() {
+    return this.dashboardData()?.enrolledCourses?.slice(0, 3);
   }
 
-  getCourseCompletionPercentage(course:any){
-    if(course.totalModule==0)return 100;
-    if(course.totalAttended===0) return 0;
-    return ((course.totalAttended/course.totalModule)*100).toFixed(2);
+  getCourseCompletionPercentage(course: any) {
+    if (course.totalModule == 0) return 100;
+    if (course.totalAttended === 0) return 0;
+    return ((course.totalAttended / course.totalModule) * 100).toFixed(2);
   }
 
-  getEnrolledDateStatus(date:Date){
+  getEnrolledDateStatus(date: Date) {
     const enrolledDate = new Date(date);
-    if(enrolledDate.getDate()===new Date(Date.now()).getDate()) return "today";
-    return `${enrolledDate.getDate()} ${enrolledDate.toLocaleDateString('en-US', {month:'short'})}`
+    const today = new Date();
+    const isToday =
+      enrolledDate.getDate() === today.getDate() &&
+      enrolledDate.getMonth() === today.getMonth() &&
+      enrolledDate.getFullYear() === today.getFullYear();
+
+    if (isToday) {
+      return "today";
+    }
+    return `${enrolledDate.getDate()} ${enrolledDate.toLocaleDateString('en-US', { month: 'short' })}`;
   }
 }
