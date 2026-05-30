@@ -1,10 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { UserService } from '../../services/user-service';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { CourseService } from '../../services/course-service';
 import { ToastrService } from 'ngx-toastr';
 import { AnnouncementService } from '../../services/announcement-service';
-import { CourseService } from '../../services/course-service';
-import { UserService } from '../../services/user-service';
+import { LoadingService } from '../../services/loading-service';
+import { finalize } from 'rxjs';
+
 
 @Component({
   selector: 'app-announcements',
@@ -20,18 +22,19 @@ export class Announcements implements OnInit {
   private courseService = inject(CourseService);
   private toastService = inject(ToastrService);
   private annnouncementService = inject(AnnouncementService);
+  private loadingService = inject(LoadingService);
 
   notifications = signal<{
-    message: string,
-    course: {
-      title: string,
-      category: string
-    },
-    createdAt: Date,
-    instructor?: {
-      name?: string
-    }
-  }[] | null>(null);
+                          message:string,
+                          course:{
+                            title:string,
+                            category:string
+                          },
+                          createdAt:Date,
+                          instructor?:{
+                            name?:string
+                          }
+                        }[]|null>(null);
 
   instructorCourses = signal<{ id: string, title: string, category: string }[]>([]);
 
@@ -53,11 +56,16 @@ export class Announcements implements OnInit {
 
     this.userService.activeUser$.subscribe(user => {
       this.isInstructor = user?.role === "INSTRUCTOR";
-      if (this.isInstructor) {
-        this.announcementForm.get('courseId')?.valueChanges.subscribe(value => {
-          if (!value) return;
-          this.annnouncementService.loadInstructorAnnouncements(value).subscribe({
-            next: res => {
+      if(this.isInstructor){
+         this.announcementForm.get('courseId')?.valueChanges.subscribe(value=>{
+          if(!value)return;
+          this.loadingService.isLoading$.next(true)
+          this.annnouncementService.loadInstructorAnnouncements(value)
+          .pipe(
+            finalize(()=>this.loadingService.isLoading$.next(false))
+          )
+          .subscribe({
+            next:res=>{
               this.notifications.set(res.result);
             },
             error: err => {
@@ -66,13 +74,18 @@ export class Announcements implements OnInit {
           })
 
         })
-      } else {
-        this.annnouncementService.loadStudentAnnouncements().subscribe({
-          next: res => {
+      }else{
+        this.loadingService.isLoading$.next(true)
+        this.annnouncementService.loadStudentAnnouncements()
+        .pipe(
+          finalize(()=>this.loadingService.isLoading$.next(false))
+        )
+        .subscribe({
+          next:res=>{
             this.notifications.set(res.result);
           },
-          error: err => {
-            console.log(err);
+          error:_=>{
+            this.toastService.error("Error while loading announcements.");
           }
         })
       }
@@ -87,16 +100,18 @@ export class Announcements implements OnInit {
 
   postAnnouncement() {
     if (this.announcementForm.invalid) return;
-
-    this.annnouncementService.postAnnouncement(this.announcementForm.value.courseId, { message: this.announcementForm.value.messageText }).subscribe({
+    this.loadingService.isLoading$.next(true);
+    this.annnouncementService.postAnnouncement(this.announcementForm.value.courseId, {message:this.announcementForm.value.messageText})
+    .pipe(
+      finalize(()=>this.loadingService.isLoading$.next(false))
+    )
+    .subscribe({
       next: (res) => {
-        console.log(res);
         this.announcementForm.reset({ courseId: '', messageText: '' });
         this.notifications.set([res.result, ...this.notifications() ?? []])
         this.toastService.success("Announcement broadcasted successfully!");
       },
       error: (err) => {
-        console.error('Failed to post announcement', err);
         this.toastService.error(err.error?.message || "Failed to post announcement");
       }
     })

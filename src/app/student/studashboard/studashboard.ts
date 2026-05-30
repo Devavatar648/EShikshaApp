@@ -2,6 +2,8 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { DashboardServices } from '../../services/dashboard-services';
 import { CommonModule, DatePipe } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { LoadingService } from '../../services/loading-service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-studashboard',
@@ -10,13 +12,19 @@ import { RouterModule } from '@angular/router';
   styleUrl: './studashboard.css',
 })
 export class Studashboard {
-  dasboardService = inject(DashboardServices);
+  private dasboardService = inject(DashboardServices);
+  private loadingService = inject(LoadingService);
 
   dashboardData = signal<any>('');
 
-  ngOnInit() {
-    this.dasboardService.getStudentDashboard().subscribe({
-      next: res => {
+  ngOnInit(){
+    this.loadingService.isLoading$.next(true);
+    this.dasboardService.getStudentDashboard()
+    .pipe(
+      finalize(()=>this.loadingService.isLoading$.next(false))
+    )
+    .subscribe({
+      next:res=>{
         this.dashboardData.set(res.result);
       },
       error: err => {

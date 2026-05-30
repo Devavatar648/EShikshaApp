@@ -2,7 +2,6 @@ import { inject } from '@angular/core';
 import { CanMatchFn, Router } from '@angular/router';
 import { TokenService } from '../services/token-service';
 import { UserService } from '../services/user-service';
-import { firstValueFrom } from 'rxjs';
 
 export const adminAuthGuard: CanMatchFn = async (route, segments) => {
   const tokenService = inject(TokenService);
@@ -34,23 +33,6 @@ export const adminAuthGuard: CanMatchFn = async (route, segments) => {
   }
 
   return false;
-
-  // const router = inject(Router);
-  // const userService=inject(UserService);
-  // let logged=false;
-
-  // userService.loggedUser$.subscribe({
-  //   next:(res)=>{
-  //     logged=res;
-  //   }
-  // })
-
-  // if (logged) {
-  //   return true;  
-  // } else {
-  //   return router.createUrlTree(['login']); 
-  // }
-
 };
 
 
