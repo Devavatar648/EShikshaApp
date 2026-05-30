@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { CourseService } from '../../services/course-service';
 import { map } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-student-progress',
@@ -10,7 +11,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './student-progress.css',
 })
 export class StudentProgress {
-  courseService = inject(CourseService);
+  private courseService = inject(CourseService);
+  private toastService=inject(ToastrService);
+
   
   instructorCourses = signal<{ id: string, title: string, category:string }[]>([]);
   studentsProgressData = signal<any|null>(null);
@@ -26,28 +29,41 @@ export class StudentProgress {
 
 
   onCourseChange(event:any){
-    console.log(event.target.value);
+    //Course Id: console.log(event.target.value);
     this.courseService.getStudentsCourseReport(event.target.value).subscribe({
       next:res=>{
         this.studentsProgressData.set(res.result);
-        console.log(res.result);
       },
       error:err=>{
-        console.log(err);
+        this.toastService.error(err.message)
       }
     })
   }
 
   getAverageCourseComplitionRate():string{
-    if(this.studentsProgressData()?.students?.length===0)return "0.00";
-    return ((this.studentsProgressData()?.students?.map((s:any)=>s.completedModule)?.reduce((a:number,b:number)=>a+b,0)/(this.studentsProgressData()?.totalModules*this.studentsProgressData()?.students?.length))*100).toFixed(2);
+    const data = this.studentsProgressData();
+    const students = data?.students;
+    const totalModules = data?.totalModules;
+
+     if (!students || students.length === 0 || !totalModules) {
+        return "0.00";
+     }
+
+     const totalCompletedModules = students.reduce((sum: number, s: any) => sum + (s.completedModule ?? 0), 0);
+
+     const maxPossibleModules = totalModules * students.length;
+
+     return ((totalCompletedModules / maxPossibleModules) * 100).toFixed(2);
+
   }
 
   getRiskStudentCount(){
     if(this.studentsProgressData()?.students?.length===0 || this.studentsProgressData()?.totalModules===0)return 0;
+   
     return this.studentsProgressData()?.students?.filter((s:any)=>{
-      console.log(s.completedModule/this.studentsProgressData()?.totalModules)
+      //console.log(s.completedModule/this.studentsProgressData()?.totalModules)
       if((s.completedModule/this.studentsProgressData()?.totalModules)<0.1)return s;
     }).length;
   }
+
 }

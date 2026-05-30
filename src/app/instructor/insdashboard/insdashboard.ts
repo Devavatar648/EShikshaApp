@@ -1,10 +1,10 @@
 import { Component, inject, signal } from '@angular/core';
-import { CourseService } from '../../services/course-service';
-import { UserService } from '../../services/user-service';
-import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration, ChartType } from 'chart.js';
-import { DashboardServices } from '../../services/dashboard-services';
 import { RouterModule } from '@angular/router';
+import { ChartConfiguration } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { CourseService } from '../../services/course-service';
+import { DashboardServices } from '../../services/dashboard-services';
+import { ToastrService } from 'ngx-toastr';
 
 
 @Component({
@@ -16,8 +16,8 @@ import { RouterModule } from '@angular/router';
 export class Insdashboard {
 
   private courseService = inject(CourseService);
-  private userService = inject(UserService);
   private dashboardService = inject(DashboardServices);
+  private toastService=inject(ToastrService);
 
   public lineChartOptions: ChartConfiguration['options'] = {
     responsive: true,
@@ -40,7 +40,8 @@ export class Insdashboard {
         this.courseService.instructorCoursesList$.next(res.result?.courses?.map((c:any)=>({id:c._id, title:c.title, category:c.category})))
       },
       error:err=>{
-        console.log(err);
+        this.toastService.error(err.message);
+        //console.log(err);
       }
     })
   }
@@ -48,7 +49,8 @@ export class Insdashboard {
 
   getTotalStudents():number{
     if(this.dashboardData()?.students?.length===0)return 0;
-    return this.dashboardData()?.students?.map((c:any)=>c.totalStudents)?.reduce((a:number,b:number)=>a+b)??0;
+    return this.dashboardData()?.students
+    ?.map((c:any)=>c.totalStudents)?.reduce((a:number,b:number)=>a+b)??0;
   }
 
   getAverageRating():string{
@@ -70,6 +72,7 @@ export class Insdashboard {
 
     const courses = this.dashboardData()?.courses;
     const students = this.dashboardData()?.students;
+    
     const data = [];
     const labels = [];
 

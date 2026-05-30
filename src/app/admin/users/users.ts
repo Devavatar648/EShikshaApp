@@ -3,7 +3,7 @@ import { User } from '../../models/user';
 import { UserService } from '../../services/user-service';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { combineLatest, debounceTime, distinctUntilChanged, map, skip, skipLast, startWith, switchMap } from 'rxjs';
+import { combineLatest, debounceTime, distinctUntilChanged, startWith, switchMap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { toObservable } from '@angular/core/rxjs-interop';
 
@@ -21,11 +21,14 @@ export class Users {
 
   users = signal<{users:User[], totalUsers:number}>({users:[], totalUsers:0});
   selectedRole!:string;
+
   searchText = new FormControl('');
   setEditUser = signal<string>('');
   updatedRole = new FormControl('');
   currentPage = signal<number>(1);
   openInputRow = signal<boolean>(false);
+
+
   instructorData = this.formBuilder.group({
     name: ['', [Validators.required]],
     email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$")]]
@@ -43,6 +46,10 @@ export class Users {
         return this.userService.getUsers(this.selectedRole||'ALL', value??'', page)
       })
     )
+
+    get email(){
+    return this.instructorData.get('email');
+    }
 
   ngOnInit(){
     this.getUser$.subscribe({
@@ -113,7 +120,7 @@ export class Users {
       this.users.set({users:this.users().users.filter(u=>u._id!==user._id), totalUsers:this.users().totalUsers-1});
     }else if(action==='update' && ind){
       const updatedUser = {...user, role:this.updatedRole.value??user.role};
-      debugger;
+      //debugger;
       this.users.update(usersData=>{
         return {
           ...usersData,
@@ -161,7 +168,5 @@ export class Users {
     }
   }
 
-  get email(){
-    return this.instructorData.get('email');
-  }
+  
 }

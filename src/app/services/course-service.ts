@@ -19,8 +19,6 @@ export class CourseService {
   instructorCoursesList$ = new BehaviorSubject<{id:string, title:string, category:string}[]|null>(null);
   studentCourses$=new BehaviorSubject<EnrolledCourse[]|null>(null);
 
-  catalogCourses$ = new BehaviorSubject<Course[]>([]);
-
   getAllCourses(pageNumber?:number, title?:string,instructor?:string):Observable<{result:{courses:Course[], totalCourses:number},message:string}>{
     let params = new HttpParams();
     if(title && title.length>0){

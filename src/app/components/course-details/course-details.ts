@@ -3,27 +3,28 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CourseService } from '../../services/course-service';
 import { Course } from '../../models/course';
 import { Assignments } from '../../models/assignments';
-import { AsyncPipe, CommonModule, DatePipe } from '@angular/common';
+import { CommonModule} from '@angular/common';
 import { AssignmentService } from '../../services/assignment-service';
 import { ToastrService } from 'ngx-toastr';
 import { UserService } from '../../services/user-service';
 import { combineLatest, map, Observable } from 'rxjs';
 import { TokenService } from '../../services/token-service';
-import { toObservable } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-course-details',
-  imports: [DatePipe, AsyncPipe,CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './course-details.html',
   styleUrl: './course-details.css',
 })
 export class CourseDetails {
+
   private activatedRoute = inject(ActivatedRoute);
   private courseService = inject(CourseService);
   private userService = inject(UserService);
   private assignmentService=inject(AssignmentService);
   private toastService=inject(ToastrService);
+
   private router = inject(Router);
   private tokenService = inject(TokenService);
 
@@ -118,9 +119,9 @@ export class CourseDetails {
   }
 
   enrollmentAccessStatus():Observable<'blocked' | 'nonblock'>{
-    return combineLatest([
-      this.userService.activeUser$
-    ]).pipe(
+    return combineLatest(
+      [this.userService.activeUser$]
+    ).pipe(
       map(([user])=>{
         this.userName=user?.name??"";
         if (user?.role === 'ADMIN' || user?.role === 'INSTRUCTOR') {

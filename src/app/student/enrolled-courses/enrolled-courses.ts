@@ -1,12 +1,10 @@
+import { CommonModule } from '@angular/common';
 import { Component, inject, signal } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { CourseService } from '../../services/course-service';
-import { Observable } from 'rxjs';
-import { Course } from '../../models/course';
-import { CommonModule } from '@angular/common';
-import { UserService } from '../../services/user-service';
 import { ToastrService } from 'ngx-toastr';
 import { EnrolledCourse } from '../../models/enrolledCourse';
+import { CourseService } from '../../services/course-service';
+import { UserService } from '../../services/user-service';
 
 @Component({
   selector: 'app-enrolled-courses',
